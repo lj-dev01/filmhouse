@@ -9,7 +9,7 @@ FILMHOUSE is a web-based cinema booking system that allows users to browse movie
 ## Tech Stack
 
 * Backend: Python (FastAPI)
-* Database: SQLite (to be implemented)
+* Database: SQLite + SQLAlchemy
 * Frontend: React (to be implemented)
 
 ---

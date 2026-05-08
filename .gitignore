@@ -16,3 +16,6 @@ backend/venv/
 # Node / React
 node_modules/
 dist/
+
+# SQLite database to be removed later after database is finished setting up 
+*.db
