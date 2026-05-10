@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from database.database import Base, engine
+from routes import auth
 
 from models.user import User
 from models.movie import Movie
@@ -14,6 +15,8 @@ app = FastAPI(
 )
 
 Base.metadata.create_all(bind=engine)
+
+app.include_router(auth.router)
 
 @app.get("/")
 def root():
