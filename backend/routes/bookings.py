@@ -8,7 +8,7 @@ from models.booking import Booking
 from models.showtime import Showtime
 from models.user import User
 from schemas.booking import BookingResponse, BookingCreate
-from services.auth_service import get_current_user
+from services.auth_service import get_current_user, get_current_admin_user
 
 router = APIRouter(
     prefix="/bookings",
@@ -86,6 +86,44 @@ def cancel_booking(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only cancel your own bookings"
+        )
+
+    if booking.booking_status == "cancelled":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Booking is already cancelled"
+        )
+
+    showtime = db.query(Showtime).filter(Showtime.id == booking.showtime_id).first()
+
+    booking.booking_status = "cancelled"
+    showtime.available_seats += booking.number_of_tickets
+
+    db.commit()
+    db.refresh(booking)
+
+    return booking
+
+@router.get("/admin/all", response_model=list[BookingResponse])
+def admin_get_all_bookings(
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    bookings = db.query(Booking).all()
+    return bookings
+
+@router.put("/admin/{booking_id}/cancel", response_model=BookingResponse)
+def admin_cancel_booking(
+    booking_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+
+    if booking is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Booking not found"
         )
 
     if booking.booking_status == "cancelled":
