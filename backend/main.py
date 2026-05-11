@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from database.database import Base, engine
-from routes import auth, movies, screens, showtimes
+from routes import auth, movies, screens, showtimes, bookings
 
 from models.user import User
 from models.movie import Movie
@@ -20,6 +20,7 @@ app.include_router(auth.router)
 app.include_router(movies.router)
 app.include_router(screens.router)
 app.include_router(showtimes.router)
+app.include_router(bookings.router)
 
 @app.get("/")
 def root():
