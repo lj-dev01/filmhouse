@@ -33,13 +33,38 @@ venv\Scripts\activate
 
 pip install -r requirements.txt
 
-### 5. Run the server
+### 5. Seed the database with demo data
+
+python seed.py
+
+### 6. Run the server
 
 uvicorn main:app --reload
 
-### 6. Open in browser
+### 7. Open in browser
 
 http://127.0.0.1:8000
 http://127.0.0.1:8000/docs
 
 
+## Running the Application (Frontend)
+
+
+
+
+
+
+## Default Test Accounts
+
+### Admin User
+
+Email: admin@filmhouse.com
+Password: AdminPassword123
+
+### Regular Users
+
+Email: john@example.com
+Password: Password1234
+
+Email: jane@example.com
+Password: Password1234
