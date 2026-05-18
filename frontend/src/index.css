@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 * {
     box-sizing: border-box;
 }
@@ -13,6 +15,7 @@ body,
 body {
     background: #000;
     overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
 }
 
 .success-message {
@@ -29,7 +32,7 @@ body {
     font-weight: 600;
 }
 
-nav {
+.navbar {
     height: 70px;
     background: #050505;
     border-bottom: 1px solid rgba(176, 141, 87, 0.35);
@@ -39,26 +42,50 @@ nav {
     padding: 0 40px;
 }
 
-nav h2 {
-    margin: 0;
+.navbar-left,
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.navbar .logo-link {
+    font-family: Georgia, "Times New Roman", serif;
     color: #b08d57;
     letter-spacing: 4px;
     font-weight: 900;
+    font-size: 1.6rem;
+    text-decoration: none;
+    margin-right: 18px;
 }
 
-nav div {
-    display: flex;
-    gap: 22px;
-}
-
-nav a {
+.navbar a {
     color: #f5f5f5;
     text-decoration: none;
     font-weight: 600;
 }
 
-nav a:hover {
+.navbar a:hover {
     color: #b08d57;
+}
+
+.navbar .logo-link:hover {
+    color: #e7c98a;
+}
+
+.navbar button {
+    background: transparent;
+    border: 1px solid rgba(176, 141, 87, 0.7);
+    color: #b08d57;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.navbar button:hover {
+    background: #b08d57;
+    color: #111;
 }
 
 .register-page {
@@ -173,7 +200,7 @@ nav a:hover {
 }
 
 .password-rules span {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     letter-spacing: 0.2px;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -210,4 +237,71 @@ nav a:hover {
     .password-rules span {
         font-size: 0.72rem;
     }
+}
+
+.login-page {
+    height: calc(100vh - 70px);
+    background: radial-gradient(circle at top, #1b1b1b 0%, #080808 55%, #000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #f5f5f5;
+    overflow: hidden;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 880px;
+    border: 1px solid rgba(176, 141, 87, 0.65);
+    border-radius: 18px;
+    padding: 34px 60px;
+    background: linear-gradient(145deg, rgba(18, 18, 18, 0.96), rgba(5, 5, 5, 0.98));
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.login-title {
+    text-align: center;
+    font-size: 2.4rem;
+    letter-spacing: 3px;
+    margin: 0 0 36px;
+    font-weight: 800;
+    color: #b08d57;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-button {
+    margin-top: 20px;
+    padding: 20px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #c9a45f, #9b7436);
+    color: #111;
+    font-size: 1.1rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    cursor: pointer;
+}
+
+.login-button:hover {
+    background: linear-gradient(135deg, #d6b36e, #a8803e);
+}
+
+.login-link-text {
+    text-align: center;
+    margin-top: 30px;
+    color: #ddd;
+    font-size: 1rem;
+}
+
+.login-link-text a {
+    color: #b08d57;
+    text-decoration: underline;
+    font-weight: 600;
 }

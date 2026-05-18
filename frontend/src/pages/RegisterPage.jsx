@@ -37,6 +37,33 @@ function RegisterPage() {
         setSuccessMessage("");
         setErrorMessage("");
 
+        if (!formData.username && !formData.email && !formData.password) {
+            setErrorMessage("Please fill in username, email and password.");
+            return;
+        }
+
+        if (!formData.username) {
+            setErrorMessage("Please fill in username.");
+            return;
+        }
+
+        if (!formData.email) {
+            setErrorMessage("Please fill in email.");
+            return;
+        }
+
+        if (!formData.password) {
+            setErrorMessage("Please fill in password.");
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(formData.email)) {
+            setErrorMessage("Please enter a valid email address.");
+            return;
+        }
+
         if (
             !passwordValidation.hasMinLength ||
             !passwordValidation.hasUppercase ||
@@ -83,7 +110,7 @@ function RegisterPage() {
             <div className="register-card">
                 <h1 className="register-title">Create Account</h1>
 
-                <form className="register-form" onSubmit={handleSubmit}>
+                <form className="register-form" onSubmit={handleSubmit} noValidate>
                     <div className="form-row">
                         <label htmlFor="username">Username</label>
                         <input

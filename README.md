@@ -10,7 +10,10 @@ FILMHOUSE is a web-based cinema booking system that allows users to browse movie
 
 * Backend: Python (FastAPI)
 * Database: SQLite + SQLAlchemy
-* Frontend: React (to be implemented)
+* Frontend: React + Vite
+* Routing: React Router
+* API Communication: Axios
+* Authentication: JWT Authentication
 
 ---
 
@@ -49,9 +52,21 @@ http://127.0.0.1:8000/docs
 
 ## Running the Application (Frontend)
 
+### 1. Navigate to frontend folder
 
+cd ../frontend
 
+### 2. Install frontend dependencies
 
+npm install
+
+### 3. Start the frontend development server
+
+npm run dev
+
+### 4. Open frontend in browser
+
+http://localhost:5173
 
 
 ## Default Test Accounts
