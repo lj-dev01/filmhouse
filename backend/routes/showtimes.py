@@ -23,7 +23,20 @@ def get_showtimes(db: Session = Depends(get_db)):
 @router.get("/movie/{movie_id}", response_model=list[ShowtimeResponse])
 def get_showtimes_by_movie(movie_id: int, db: Session = Depends(get_db)):
     showtimes = db.query(Showtime).filter(Showtime.movie_id == movie_id).all()
-    return showtimes
+
+    return [
+        {
+            "id": showtime.id,
+            "movie_id": showtime.movie_id,
+            "screen_id": showtime.screen_id,
+            "screen_name": showtime.screen.screen_name,
+            "screen_type": showtime.screen.screen_type,
+            "start_time": showtime.start_time,
+            "ticket_price": showtime.ticket_price,
+            "available_seats": showtime.available_seats,
+        }
+        for showtime in showtimes
+    ]
 
 @router.post("/", response_model=ShowtimeResponse, status_code=status.HTTP_201_CREATED)
 def create_showtime(

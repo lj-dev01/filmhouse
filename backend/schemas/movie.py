@@ -1,6 +1,7 @@
 from datetime import date
 from pydantic import BaseModel
 
+
 class MovieBase(BaseModel):
     title: str
     genre: str
@@ -8,9 +9,12 @@ class MovieBase(BaseModel):
     duration_minutes: int
     description: str
     release_date: date
+    poster_url: str | None = None
+
 
 class MovieCreate(MovieBase):
     pass
+
 
 class MovieUpdate(BaseModel):
     title: str | None = None
@@ -19,6 +23,7 @@ class MovieUpdate(BaseModel):
     duration_minutes: int | None = None
     description: str | None = None
     release_date: date | None = None
+    poster_url: str | None = None
 
 
 class MovieResponse(MovieBase):

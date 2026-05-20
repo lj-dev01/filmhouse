@@ -18,6 +18,7 @@ import MyBookingsPage from "./pages/MyBookingsPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
+import ShowtimesPage from "./pages/ShowtimesPage";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
@@ -46,6 +47,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                       }
                     />
                 </Route>
+                <Route path="/showtimes/:movieId" element={<ShowtimesPage />} />
             </Routes>
         </BrowserRouter>
     </React.StrictMode>

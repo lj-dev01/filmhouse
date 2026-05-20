@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 
+
 class ShowtimeBase(BaseModel):
     movie_id: int
     screen_id: int
@@ -8,8 +9,10 @@ class ShowtimeBase(BaseModel):
     ticket_price: float
     available_seats: int
 
+
 class ShowtimeCreate(ShowtimeBase):
     pass
+
 
 class ShowtimeUpdate(BaseModel):
     movie_id: int | None = None
@@ -18,8 +21,11 @@ class ShowtimeUpdate(BaseModel):
     ticket_price: float | None = None
     available_seats: int | None = None
 
+
 class ShowtimeResponse(ShowtimeBase):
     id: int
+    screen_name: str | None = None
+    screen_type: str | None = None
 
     model_config = {
         "from_attributes": True

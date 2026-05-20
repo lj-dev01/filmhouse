@@ -13,5 +13,6 @@ class Movie(Base):
     duration_minutes = Column(Integer, nullable=False)
     description = Column(Text, nullable=False)
     release_date = Column(Date, nullable=False)
+    poster_url = Column(String, nullable=True)
 
     showtimes = relationship("Showtime", back_populates="movie")
