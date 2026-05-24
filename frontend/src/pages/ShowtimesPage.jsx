@@ -1,9 +1,10 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
 function ShowtimesPage() {
     const { movieId } = useParams();
+    const navigate = useNavigate();
 
     const [movie, setMovie] = useState(null);
     const [showtimes, setShowtimes] = useState([]);
@@ -94,7 +95,12 @@ function ShowtimesPage() {
                 message.toLowerCase().includes("token")
             ) {
                 localStorage.removeItem("token");
-                setBookingError("Your session has expired. Please log in again to continue.");
+                setBookingError("Your session has expired. Redirecting to login...");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1200);
+
                 return;
             }
 

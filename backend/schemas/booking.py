@@ -14,6 +14,12 @@ class BookingResponse(BaseModel):
     booking_status: str
     created_at: datetime
 
+    movie_title: str | None = None
+    movie_age_rating: str | None = None
+    showtime_start_time: datetime | None = None
+    screen_name: str | None = None
+    screen_type: str | None = None
+
     model_config = {
         "from_attributes": True
     }

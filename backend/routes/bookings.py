@@ -15,6 +15,26 @@ router = APIRouter(
     tags=["Bookings"]
 )
 
+def format_booking_response(booking: Booking):
+    showtime = booking.showtime
+    movie = showtime.movie if showtime else None
+    screen = showtime.screen if showtime else None
+
+    return {
+        "id": booking.id,
+        "user_id": booking.user_id,
+        "showtime_id": booking.showtime_id,
+        "number_of_tickets": booking.number_of_tickets,
+        "booking_reference": booking.booking_reference,
+        "booking_status": booking.booking_status,
+        "created_at": booking.created_at,
+        "movie_title": movie.title if movie else None,
+        "movie_age_rating": movie.age_rating if movie else None,
+        "showtime_start_time": showtime.start_time if showtime else None,
+        "screen_name": screen.screen_name if screen else None,
+        "screen_type": screen.screen_type if screen else None,
+    }
+
 
 @router.post("/", response_model=BookingResponse, status_code=status.HTTP_201_CREATED)
 def create_booking(
@@ -66,7 +86,8 @@ def get_my_bookings(
     current_user: User = Depends(get_current_user)
 ):
     bookings = db.query(Booking).filter(Booking.user_id == current_user.id).all()
-    return bookings
+
+    return [format_booking_response(booking) for booking in bookings]
 
 @router.put("/{booking_id}/cancel", response_model=BookingResponse)
 def cancel_booking(
