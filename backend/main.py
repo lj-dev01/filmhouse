@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.database import Base, engine
-from routes import auth, movies, screens, showtimes, bookings
+from routes import auth, movies, screens, showtimes, bookings, users
 
 from models.user import User
 from models.movie import Movie
 from models.screen import Screen
 from models.showtime import Showtime
 from models.booking import Booking
+
 
 app = FastAPI(
     title="FILMHOUSE API",
@@ -30,6 +31,7 @@ app.include_router(movies.router)
 app.include_router(screens.router)
 app.include_router(showtimes.router)
 app.include_router(bookings.router)
+app.include_router(users.router)
 
 @app.get("/")
 def root():

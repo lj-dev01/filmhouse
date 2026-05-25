@@ -15,7 +15,7 @@ function MoviesPage() {
 
                 setMovies(response.data);
             } catch (error) {
-                setErrorMessage("Failed to load movies.");
+                setErrorMessage("Failed to load movies");
             } finally {
                 setLoading(false);
             }

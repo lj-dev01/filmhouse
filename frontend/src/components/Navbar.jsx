@@ -31,7 +31,7 @@ function Navbar() {
                 )}
 
                 {token && role === "admin" && (
-                    <Link to="/admin">Admin</Link>
+                    <Link to="/admin">Admin Dashboard</Link>
                 )}
             </div>
 

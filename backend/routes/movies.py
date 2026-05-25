@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from database.database import get_db
 from models.movie import Movie
 from models.user import User
+from models.showtime import Showtime
+from models.booking import Booking
 from schemas.movie import MovieResponse, MovieCreate, MovieUpdate
 from services.auth_service import get_current_admin_user
 
@@ -80,6 +82,21 @@ def delete_movie(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Movie not found"
         )
+
+    showtimes = db.query(Showtime).filter(Showtime.movie_id == movie_id).all()
+    showtime_ids = [showtime.id for showtime in showtimes]
+
+    if showtime_ids:
+        bookings = db.query(Booking).filter(
+            Booking.showtime_id.in_(showtime_ids)
+        ).all()
+
+        for booking in bookings:
+            booking.booking_status = "cancelled"
+
+        db.query(Showtime).filter(
+            Showtime.movie_id == movie_id
+        ).delete(synchronize_session=False)
 
     db.delete(movie)
     db.commit()

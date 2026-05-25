@@ -1,6 +1,9 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import MovieDetails from "../components/MovieDetails";
+import ShowtimesTable from "../components/ShowtimesTable";
+import BookingForm from "../components/BookingForm";
 
 function ShowtimesPage() {
     const { movieId } = useParams();
@@ -26,7 +29,7 @@ function ShowtimesPage() {
                 setMovie(movieResponse.data);
                 setShowtimes(showtimesResponse.data);
             } catch (error) {
-                setErrorMessage("Failed to load showtimes.");
+                setErrorMessage("Failed to load showtimes");
             } finally {
                 setLoading(false);
             }
@@ -88,7 +91,7 @@ function ShowtimesPage() {
             const updatedShowtimes = await api.get(`/showtimes/movie/${movieId}`);
             setShowtimes(updatedShowtimes.data);
         } catch (error) {
-            const message = error.response?.data?.detail || "Booking failed. Please try again.";
+            const message = error.response?.data?.detail || "Booking failed. Please try again";
 
             if (
                 error.response?.status === 401 ||
@@ -138,227 +141,27 @@ function ShowtimesPage() {
                 </div>
 
                 <div className="showtimes-main-content">
-                    <div className="showtimes-details">
-                        <div className="showtimes-title-row">
-                            <h1>{movie?.title}</h1>
-                            <span className="showtimes-age-rating">
-                                {movie?.age_rating}
-                            </span>
-                        </div>
+                    <MovieDetails movie={movie} />
 
-                        <div className="movie-info-line">
-                            <span>{movie?.release_date?.slice(0, 4)}</span>
-                            <span>•</span>
-                            <span>{movie?.duration_minutes} mins</span>
-                            <span>•</span>
-                            <span>{movie?.genre}</span>
-                        </div>
-
-                        <p className="showtimes-description">
-                            <strong>Description:</strong> {movie?.description}
-                        </p>
-                    </div>
-
-                    <div className="available-showtimes">
-                        <h2>Available Showtimes</h2>
-
-                        {bookingNotice && (
-                            <p className="booking-notice">
-                                {bookingNotice}
-                            </p>
-                        )}
-
-                        {showtimes.length === 0 ? (
-                            <p className="no-showtimes-message">
-                                No showtimes available for this movie.
-                            </p>
-                        ) : (
-                            <div className="showtimes-table">
-                                <div className="showtimes-table-header">
-                                    <span>Time</span>
-                                    <span>Screen</span>
-                                    <span>Price</span>
-                                    <span></span>
-                                </div>
-
-                                {showtimes.map((showtime) => {
-                                    const date = new Date(showtime.start_time);
-
-                                    return (
-                                        <div
-                                            className="showtimes-table-row"
-                                            key={showtime.id}
-                                        >
-                                            <div>
-                                                <p className="showtime-main">
-                                                    {date.toLocaleTimeString("en-GB", {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                    })}
-                                                </p>
-
-                                                <p className="showtime-sub">
-                                                    {date.toLocaleDateString("en-GB", {
-                                                        weekday: "short",
-                                                        day: "numeric",
-                                                        month: "short",
-                                                        year: "numeric",
-                                                    })}
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <p className="showtime-main">
-                                                    {showtime.screen_type}
-                                                </p>
-
-                                                <p className="showtime-sub">
-                                                    {showtime.screen_name}
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <p className="showtime-price">
-                                                    £{showtime.ticket_price}
-                                                </p>
-
-                                                <p className="showtime-sub">
-                                                    {showtime.available_seats} seats available
-                                                </p>
-                                            </div>
-
-                                            <button
-                                                className="book-now-button"
-                                                onClick={() => handleBookClick(showtime)}
-                                            >
-                                                Book
-                                            </button>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                    </div>
+                    <ShowtimesTable
+                        showtimes={showtimes}
+                        bookingNotice={bookingNotice}
+                        onBookClick={handleBookClick}
+                    />
                 </div>
             </div>
 
-            {selectedShowtime && (
-                <aside className="booking-panel">
-                    <button className="booking-panel-close" onClick={closeBookingPanel}>
-                        ×
-                    </button>
-
-                    {bookingSuccess ? (
-                        <div className="booking-success-panel">
-                            <h2>Booking Confirmed</h2>
-
-                            <p className="booking-success-text">
-                                Your booking has been successfully created.
-                            </p>
-
-                            <div className="booking-reference-box">
-                                <span>Booking Reference</span>
-                                <strong>{bookingSuccess}</strong>
-                            </div>
-
-                            <Link to="/my-bookings" className="confirm-booking-button">
-                                View My Bookings
-                            </Link>
-
-                            <button
-                                className="cancel-booking-button"
-                                onClick={closeBookingPanel}
-                            >
-                                Continue Browsing
-                            </button>
-                        </div>
-                    ) : (
-                        <>
-                            <h2>Book Showtime</h2>
-
-                            <div className="booking-summary">
-                                <h3>{movie?.title}</h3>
-
-                                <p>
-                                    <strong>Screen:</strong>{" "}
-                                    {selectedShowtime.screen_name} · {selectedShowtime.screen_type}
-                                </p>
-
-                                <p>
-                                    <strong>Date:</strong>{" "}
-                                    {new Date(selectedShowtime.start_time).toLocaleDateString(
-                                        "en-GB",
-                                        {
-                                            weekday: "short",
-                                            day: "numeric",
-                                            month: "short",
-                                            year: "numeric",
-                                        }
-                                    )}
-                                </p>
-
-                                <p>
-                                    <strong>Time:</strong>{" "}
-                                    {new Date(selectedShowtime.start_time).toLocaleTimeString(
-                                        "en-GB",
-                                        {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        }
-                                    )}
-                                </p>
-
-                                <p>
-                                    <strong>Ticket Price:</strong> £
-                                    {selectedShowtime.ticket_price}
-                                </p>
-                            </div>
-
-                            <div className="ticket-selector">
-                                <p>Select Number of Tickets</p>
-
-                                <div className="ticket-controls">
-                                    <button onClick={decreaseTickets}>−</button>
-                                    <span>{ticketCount}</span>
-                                    <button onClick={increaseTickets}>+</button>
-                                </div>
-
-                                <p className="ticket-availability">
-                                    {selectedShowtime.available_seats} seats available
-                                </p>
-                            </div>
-
-                            <div className="booking-total">
-                                <span>Total</span>
-                                <strong>
-                                    £
-                                    {(ticketCount * selectedShowtime.ticket_price).toFixed(2)}
-                                </strong>
-                            </div>
-
-                            <button
-                                className="confirm-booking-button"
-                                onClick={handleConfirmBooking}
-                            >
-                                Confirm Booking
-                            </button>
-
-                            <button
-                                className="cancel-booking-button"
-                                onClick={closeBookingPanel}
-                            >
-                                Cancel
-                            </button>
-
-                            {bookingError && (
-                                <p className="error-message">
-                                    {bookingError}
-                                </p>
-                            )}
-                        </>
-                    )}
-                </aside>
-            )}
+            <BookingForm
+                selectedShowtime={selectedShowtime}
+                movie={movie}
+                ticketCount={ticketCount}
+                bookingSuccess={bookingSuccess}
+                bookingError={bookingError}
+                onClose={closeBookingPanel}
+                onIncreaseTickets={increaseTickets}
+                onDecreaseTickets={decreaseTickets}
+                onConfirmBooking={handleConfirmBooking}
+            />
         </section>
     );
 }

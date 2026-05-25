@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import BookingCard from "../components/BookingCard";
+import MyBookingCard from "../components/MyBookingCard";
 import api from "../services/api";
 
 function MyBookingsPage() {
@@ -44,7 +44,24 @@ function MyBookingsPage() {
 
             setBookingToCancel(null);
         } catch (error) {
-            setErrorMessage("Failed to cancel booking. Please try again.");
+            const detail = error.response?.data?.detail || "";
+
+            if (
+                error.response?.status === 401 ||
+                detail.toLowerCase().includes("token")
+            ) {
+                localStorage.removeItem("token");
+                setErrorMessage("Your session has expired. Redirecting to login...");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1200);
+
+                setBookingToCancel(null);
+                return;
+            }
+
+            setErrorMessage("Failed to cancel booking. Please try again");
             setBookingToCancel(null);
         }
     }
@@ -54,11 +71,13 @@ function MyBookingsPage() {
             const token = localStorage.getItem("token");
 
             if (!token) {
-                setErrorMessage(
-                    "Login required. Please log in to view your bookings."
-                );
+                localStorage.removeItem("token");
+                setErrorMessage("Login required. Redirecting to login...");
 
-                setLoading(false);
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1200);
+
                 return;
             }
 
@@ -126,7 +145,7 @@ function MyBookingsPage() {
                 }
 
                 setErrorMessage(
-                    "Failed to load bookings. Please try again."
+                    "Failed to load bookings. Please try again"
                 );
             } finally {
                 setLoading(false);
@@ -162,7 +181,7 @@ function MyBookingsPage() {
                     <p className="no-bookings-message">You have no bookings yet.</p>
                 ) : (
                     bookings.map((booking) => (
-                        <BookingCard
+                        <MyBookingCard
                             key={booking.id}
                             booking={booking}
                             onCancelClick={handleCancelClick}

@@ -18,11 +18,14 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+/* .......... GLOBAL & SHARED STYLES .......... */
+
 .success-message {
     color: #8fd694;
     text-align: center;
     margin: 0;
     font-weight: 600;
+    padding: 0 0 14px;
 }
 
 .error-message {
@@ -30,6 +33,7 @@ body {
     text-align: center;
     margin: 0;
     font-weight: 600;
+    padding: 0 0 14px;
 }
 
 .navbar {
@@ -41,6 +45,7 @@ body {
     justify-content: space-between;
     padding: 0 40px;
 }
+
 
 .navbar-left,
 .navbar-right {
@@ -87,6 +92,8 @@ body {
     background: #b08d57;
     color: #111;
 }
+
+/* .......... REGISTER PAGE .......... */
 
 .register-page {
     height: calc(100vh - 70px);
@@ -239,6 +246,8 @@ body {
     }
 }
 
+/* .......... LOGIN PAGE .......... */
+
 .login-page {
     height: calc(100vh - 70px);
     background: radial-gradient(circle at top, #1b1b1b 0%, #080808 55%, #000 100%);
@@ -305,6 +314,8 @@ body {
     text-decoration: underline;
     font-weight: 600;
 }
+
+/* .......... MOVIES PAGE .......... */
 
 .movies-page {
     min-height: calc(100vh - 70px);
@@ -486,6 +497,8 @@ body {
         height: 300px;
     }
 }
+
+/* .......... SHOWTIMES PAGE .......... */
 
 .showtimes-page {
     min-height: calc(100vh - 70px);
@@ -787,12 +800,22 @@ body {
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.confirm-booking-button:hover {
+    background: linear-gradient(135deg, #e8c66a, #a16f2f);
+    transform: translateY(-1px);
 }
 
 .cancel-booking-button {
     background: transparent;
     border: 1px solid rgba(176, 141, 87, 0.65);
     color: #f5f5f5;
+}
+
+.cancel-booking-button:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .booking-success-panel {
@@ -835,6 +858,7 @@ body {
     margin: 0 0 18px;
 }
 
+/* Showtimes Page - Responsive */
 @media (max-width: 900px) {
     .showtimes-page {
         padding: 30px 22px;
@@ -858,10 +882,25 @@ body {
         gap: 12px;
     }
 
+    .showtimes-main-content {
+        width: 100%;
+    }
+
+    .available-showtimes {
+        margin-top: 24px;
+    }
+
+    .ticket-selector,
+    .booking-total {
+        width: 100%;
+    }
+
     .booking-panel {
         width: 100%;
     }
 }
+
+/* .......... MY BOOKINGS PAGE .......... */
 
 .my-bookings-page {
     min-height: calc(100vh - 70px);
@@ -1001,6 +1040,7 @@ body {
     color: rgba(255, 255, 255, 0.5);
 }
 
+/* Shared Modal & Booking Components */
 .cancel-booking-overlay {
     position: fixed;
     inset: 0;
@@ -1111,5 +1151,643 @@ body {
 
     .cancel-booking-actions {
         flex-direction: column;
+    }
+}
+
+/* .......... ADMIN DASHBOARD PAGE .......... */
+
+.admin-dashboard-page {
+    min-height: calc(100vh - 70px);
+    background:
+        radial-gradient(circle at top,
+        #151515 0%,
+        #070707 55%,
+        #000 100%);
+    color: #f5f5f5;
+    padding: 36px 48px;
+}
+
+.admin-dashboard-header {
+    margin-bottom: 32px;
+}
+
+.admin-dashboard-header h1 {
+    margin: 0 0 10px;
+    font-size: 2.5rem;
+    color: #f5f5f5;
+}
+
+.admin-dashboard-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.6;
+}
+
+.admin-dashboard-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid rgba(176, 141, 87, 0.22);
+    padding-bottom: 18px;
+}
+
+.admin-dashboard-tab {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.55);
+    padding: 12px 18px;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: 0.2s ease;
+}
+
+.admin-dashboard-tab:hover {
+    color: #f5f5f5;
+}
+
+.admin-dashboard-tab.active {
+    color: #b08d57;
+    border-bottom: 2px solid #b08d57;
+}
+
+.admin-dashboard-content {
+    border: 1px solid rgba(176, 141, 87, 0.18);
+    border-radius: 12px;
+    padding: 28px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16, 16, 16, 0.92),
+            rgba(5, 5, 5, 0.96)
+        );
+}
+
+.admin-dashboard-content h2 {
+    margin: 0 0 10px;
+    color: #f5f5f5;
+}
+
+.admin-dashboard-content p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.6;
+}
+
+/* .......... ADMIN COMPONENTS & SHARED .......... */
+
+.admin-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 22px;
+}
+
+.admin-section-header h2 {
+    margin: 0 0 8px;
+    color: #f5f5f5;
+}
+
+.admin-section-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table td:first-child,
+.admin-table th:first-child {
+    text-align: left;
+    padding-left: 18px;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 16px 14px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+}
+
+.admin-table th {
+    color: #b08d57;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.8rem;
+}
+
+.admin-table td {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.92rem;
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(176, 141, 87, 0.05);
+}
+
+.admin-status {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 5px 12px;
+    text-transform: capitalize;
+    font-weight: 800;
+    font-size: 0.78rem;
+}
+
+.admin-status.active {
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ade80;
+}
+
+.admin-status.cancelled {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ff8a8a;
+}
+
+.admin-cancel-button,
+.admin-disabled-button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.admin-cancel-button {
+    border: 1px solid rgba(176, 141, 87, 0.7);
+    background: transparent;
+    color: #b08d57;
+    cursor: pointer;
+}
+
+.admin-cancel-button:hover {
+    background: #b08d57;
+    color: #111;
+}
+
+.admin-disabled-button {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.35);
+    cursor: not-allowed;
+}
+
+.admin-showtime-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-showtime-cell span {
+    color: #f5f5f5;
+}
+
+.admin-showtime-cell small {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.admin-cancel-summary {
+    border: 1px solid rgba(176, 141, 87, 0.25);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 28px;
+    background: rgba(176, 141, 87, 0.04);
+    text-align: left;
+}
+
+.admin-cancel-summary p {
+    margin: 8px 0;
+    color: rgba(255, 255, 255, 0.68);
+}
+
+.admin-cancel-summary strong {
+    color: #f5f5f5;
+}
+
+.admin-add-button {
+    border: none;
+    background: linear-gradient(135deg, #c9a45f, #9b7436);
+    color: #111;
+    padding: 11px 18px;
+    border-radius: 7px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.admin-add-button:hover {
+    background: linear-gradient(135deg, #ddb970, #b88a45);
+}
+
+.admin-action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.admin-edit-button, .admin-delete-button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    cursor: pointer;
+    flex: unset;
+}
+
+.admin-edit-button {
+    border: 1px solid rgba(176, 141, 87, 0.7);
+    background: transparent;
+    color: #b08d57;
+}
+
+.admin-edit-button:hover {
+    background: #b08d57;
+    color: #111;
+}
+
+.admin-movie-modal {
+    width: 100%;
+    max-width: 620px;
+    border: 1px solid rgba(176, 141, 87, 0.45);
+    border-radius: 14px;
+    padding: 34px;
+    background: linear-gradient(145deg, rgba(16, 16, 16, 0.98), rgba(4, 4, 4, 0.98));
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.admin-movie-modal h2 {
+    margin: 0 0 24px;
+    color: #b08d57;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+}
+
+.admin-movie-form {
+    display: grid;
+    gap: 14px;
+}
+
+.admin-movie-form input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.admin-movie-form input[type="number"]::-webkit-outer-spin-button,
+.admin-movie-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.admin-movie-form input[type="date"] {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.admin-movie-form input[type="date"]:valid {
+    color: #f5f5f5;
+}
+
+.admin-movie-form input,
+.admin-movie-form textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 7px;
+    border: 1px solid rgba(176, 141, 87, 0.35);
+    background: rgba(5, 5, 5, 0.8);
+    color: #f5f5f5;
+    outline: none;
+}
+
+.admin-movie-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.admin-role-badge {
+    display: inline-block;
+    min-width: 86px;
+    border-radius: 999px;
+    padding: 6px 14px;
+    text-transform: capitalize;
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.6px;
+}
+
+.admin-role-badge.admin {
+    background: rgba(176, 141, 87, 0.16);
+    color: #d6b36e;
+    border: 1px solid rgba(176, 141, 87, 0.45);
+}
+
+.admin-role-badge.regular {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.68);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.admin-showtimes-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.admin-showtime-pill {
+    display: inline-block;
+    border: 1px solid rgba(176, 141, 87, 0.28);
+    border-radius: 999px;
+    padding: 6px 10px;
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(176, 141, 87, 0.05);
+    font-size: 0.78rem;
+}
+
+.admin-no-showtimes {
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.9rem;
+}
+
+.admin-showtimes-modal {
+    max-width: 760px;
+    max-height: 88vh;
+    overflow-y: auto;
+}
+
+.admin-showtimes-modal-title {
+    text-align: center;
+    color: #f5f5f5;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+}
+
+.admin-existing-showtimes {
+    border: 1px solid rgba(176, 141, 87, 0.25);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 24px;
+    background: rgba(176, 141, 87, 0.04);
+}
+
+.admin-existing-showtimes h3,
+.admin-movie-form h3 {
+    margin: 0 0 14px;
+    color: #b08d57;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+}
+
+.admin-existing-showtime-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-existing-showtime-row:last-child {
+    border-bottom: none;
+}
+
+.admin-existing-showtime-row div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-existing-showtime-row strong {
+    color: #f5f5f5;
+}
+
+.admin-existing-showtime-row span {
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.88rem;
+}
+
+.admin-movie-form select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 7px;
+    border: 1px solid rgba(176, 141, 87, 0.35);
+    background: rgba(5, 5, 5, 0.8);
+    color: #f5f5f5;
+    outline: none;
+}
+
+@media (max-width: 900px) {
+    .admin-dashboard-page {
+        padding: 30px 22px;
+    }
+
+    .admin-dashboard-tabs {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .admin-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .admin-table {
+        min-width: 700px;
+    }
+
+    .admin-showtimes-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .admin-showtime-pill {
+        width: 100%;
+    }
+
+    .admin-movie-modal {
+        max-width: 100%;
+        margin: 20px;
+        padding: 24px;
+    }
+
+    .admin-existing-showtime-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .admin-existing-showtime-row div {
+        width: 100%;
+    }
+
+    .admin-movie-form {
+        gap: 18px;
+    }
+
+    .cancel-booking-actions {
+        flex-direction: column;
+    }
+}
+
+/* .......... HOME PAGE .......... */
+
+.home-page {
+    min-height: calc(100vh - 70px);
+    background: radial-gradient(circle at top, #151515 0%, #070707 55%, #000 100%);
+    color: #f5f5f5;
+    padding: 36px 48px;
+}
+
+.home-hero {
+    min-height: calc(100vh - 142px);
+    border: 1px solid rgba(176, 141, 87, 0.45);
+    border-radius: 34px;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.75)
+        ),
+        url("/cinema-hero.jpg");
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 45px rgba(0, 0, 0, 0.75);
+}
+
+.home-hero-overlay {
+    min-height: calc(100vh - 142px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    background: radial-gradient(circle at center, rgba(176, 141, 87, 0.08), rgba(0, 0, 0, 0.35));
+}
+
+.home-hero-content {
+    text-align: center;
+    max-width: 850px;
+}
+
+.home-hero-welcome {
+    display: block;
+    margin-bottom: 16px;
+    color: rgba(255, 255, 255, 0.78);
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.home-hero-content h1 {
+    margin: 0;
+    color: #b08d57;
+    text-transform: uppercase;
+    letter-spacing: 9px;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.home-hero-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin: 30px 0 26px;
+}
+
+.home-hero-divider span {
+    width: 120px;
+    height: 1px;
+    background: rgba(176, 141, 87, 0.55);
+}
+
+.home-hero-divider p {
+    margin: 0;
+    color: #b08d57;
+    font-size: 1rem;
+}
+
+.home-hero-content > p {
+    margin: 28px 0 38px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 1.25rem;
+    line-height: 1.7;
+}
+
+.home-hero-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 260px;
+    padding: 18px 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #c9a45f, #9b7436);
+    color: #111;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 900;
+    transition: 0.2s ease;
+}
+
+.home-hero-button:hover {
+    background: linear-gradient(135deg, #ddb970, #b88a45);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .home-page {
+        padding: 24px;
+    }
+
+    .home-hero {
+        border-radius: 22px;
+    }
+
+    .home-hero-welcome {
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+    }
+
+    .home-hero-content h1 {
+        letter-spacing: 5px;
+        font-size: clamp(2.6rem, 13vw, 4rem);
+    }
+
+    .home-hero-content > p {
+        font-size: 1rem;
+    }
+
+    .home-hero-button {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .home-hero-divider {
+        gap: 12px;
+    }
+
+    .home-hero-divider span {
+        width: 70px;
+    }
+
+    .home-hero-divider p {
+        font-size: 0.9rem;
     }
 }

@@ -14,6 +14,7 @@ class BookingResponse(BaseModel):
     booking_status: str
     created_at: datetime
 
+    user_email: str | None = None
     movie_title: str | None = None
     movie_age_rating: str | None = None
     showtime_start_time: datetime | None = None

@@ -19,10 +19,12 @@ def format_booking_response(booking: Booking):
     showtime = booking.showtime
     movie = showtime.movie if showtime else None
     screen = showtime.screen if showtime else None
+    user = booking.user
 
     return {
         "id": booking.id,
         "user_id": booking.user_id,
+        "user_email": user.email if user else None,
         "showtime_id": booking.showtime_id,
         "number_of_tickets": booking.number_of_tickets,
         "booking_reference": booking.booking_reference,
@@ -131,7 +133,7 @@ def admin_get_all_bookings(
     current_admin: User = Depends(get_current_admin_user)
 ):
     bookings = db.query(Booking).all()
-    return bookings
+    return [format_booking_response(booking) for booking in bookings]
 
 @router.put("/admin/{booking_id}/cancel", response_model=BookingResponse)
 def admin_cancel_booking(

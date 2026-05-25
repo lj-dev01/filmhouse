@@ -1,4 +1,4 @@
-function BookingCard({ booking, onCancelClick }) {
+function MyBookingCard({ booking, onCancelClick }) {
     return (
         <article className="my-booking-card">
             <div className="my-booking-card-main">
@@ -41,4 +41,4 @@ function BookingCard({ booking, onCancelClick }) {
     );
 }
 
-export default BookingCard;
+export default MyBookingCard;
