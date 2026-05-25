@@ -1661,8 +1661,7 @@ body {
         linear-gradient(
             rgba(0, 0, 0, 0.45),
             rgba(0, 0, 0, 0.75)
-        ),
-        url("/cinema-hero.jpg");
+        );
     background-size: cover;
     background-position: center;
     box-shadow: 0 0 45px rgba(0, 0, 0, 0.75);
