@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 
 function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
+    // Admin bookings state
     const [adminBookings, setAdminBookings] = useState([]);
     const [loadingBookings, setLoadingBookings] = useState(false);
     const [adminError, setAdminError] = useState("");
     const [adminBookingToCancel, setAdminBookingToCancel] = useState(null);
 
+    // Cancel booking modal actions
     function handleAdminCancelClick(booking) {
         setAdminBookingToCancel(booking);
     }
@@ -16,6 +18,7 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
         setAdminBookingToCancel(null);
     }
 
+    // Confirm admin cancellation
     async function confirmAdminCancelBooking() {
         const token = localStorage.getItem("token");
 
@@ -62,6 +65,7 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
         }
     }
 
+    // Load all bookings
     useEffect(() => {
         async function fetchAdminBookings() {
             const token = localStorage.getItem("token");
@@ -106,6 +110,7 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
     return (
         <>
             <div>
+                {/* Admin bookings header */}
                 <div className="admin-section-header">
                     <div>
                         <h2>All Bookings</h2>
@@ -113,9 +118,11 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
                     </div>
                 </div>
 
+                {/* Admin bookings messages */}
                 {loadingBookings && <p>Loading bookings...</p>}
                 {adminError && <div className="error-message">{adminError}</div>}
 
+                {/* Admin bookings table */}
                 <div className="admin-table-wrapper">
                     <table className="admin-table">
                         <thead>
@@ -187,6 +194,7 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             </div>
 
+            {/* Admin cancel booking modal */}
             {adminBookingToCancel && (
                 <div className="cancel-booking-overlay">
                     <div className="cancel-booking-modal">

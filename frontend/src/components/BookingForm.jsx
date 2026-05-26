@@ -15,10 +15,12 @@ function BookingForm({
 
     return (
         <aside className="booking-panel">
+            {/* Close booking panel */}
             <button className="booking-panel-close" onClick={onClose}>
                 ×
             </button>
 
+            {/* Booking success state */}
             {bookingSuccess ? (
                 <div className="booking-success-panel">
                     <h2>Booking Confirmed</h2>
@@ -45,6 +47,7 @@ function BookingForm({
                 </div>
             ) : (
                 <>
+                    {/* Booking summary */}
                     <h2>Book Showtime</h2>
 
                     <div className="booking-summary">
@@ -85,6 +88,7 @@ function BookingForm({
                         </p>
                     </div>
 
+                    {/* Ticket selector */}
                     <div className="ticket-selector">
                         <p>Select Number of Tickets</p>
 
@@ -99,6 +103,7 @@ function BookingForm({
                         </p>
                     </div>
 
+                    {/* Booking total */}
                     <div className="booking-total">
                         <span>Total</span>
                         <strong>
@@ -107,6 +112,7 @@ function BookingForm({
                         </strong>
                     </div>
 
+                    {/* Booking actions */}
                     <button
                         className="confirm-booking-button"
                         onClick={onConfirmBooking}
@@ -121,6 +127,7 @@ function BookingForm({
                         Cancel
                     </button>
 
+                    {/* Booking error */}
                     {bookingError && (
                         <p className="error-message">
                             {bookingError}

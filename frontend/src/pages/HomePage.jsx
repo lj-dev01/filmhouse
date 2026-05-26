@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 function HomePage() {
     return (
         <main className="home-page">
+            {/* Hero section */}
             <section className="home-hero">
                 <div className="home-hero-overlay">
                     <div className="home-hero-content">

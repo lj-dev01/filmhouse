@@ -1,20 +1,24 @@
 function ShowtimesTable({ showtimes, bookingNotice, onBookClick }) {
     return (
         <div className="available-showtimes">
+            {/* Showtimes heading */}
             <h2>Available Showtimes</h2>
 
+            {/* Booking notice */}
             {bookingNotice && (
                 <p className="booking-notice">
                     {bookingNotice}
                 </p>
             )}
 
+            {/* Showtime rows */}
             {showtimes.length === 0 ? (
                 <p className="no-showtimes-message">
                     No showtimes available for this movie.
                 </p>
             ) : (
                 <div className="showtimes-table">
+                    {/* Table header */}
                     <div className="showtimes-table-header">
                         <span>Time</span>
                         <span>Screen</span>
@@ -22,6 +26,7 @@ function ShowtimesTable({ showtimes, bookingNotice, onBookClick }) {
                         <span></span>
                     </div>
 
+                    {/* Table body */}
                     {showtimes.map((showtime) => {
                         const date = new Date(showtime.start_time);
 

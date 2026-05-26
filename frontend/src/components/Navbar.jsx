@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 function Navbar() {
+    // Authentication state
     const token = localStorage.getItem("token");
 
     let role = null;
@@ -14,6 +15,7 @@ function Navbar() {
         }
     }
 
+    // Logout action
     function handleLogout() {
         localStorage.removeItem("token");
         window.location.href = "/login";
@@ -21,6 +23,7 @@ function Navbar() {
 
     return (
         <nav className="navbar">
+            {/* Primary navigation */}
             <div className="navbar-left">
                 <Link to="/" className="logo-link">FILMHOUSE</Link>
 
@@ -35,6 +38,7 @@ function Navbar() {
                 )}
             </div>
 
+            {/* Authentication navigation */}
             <div className="navbar-right">
                 {!token && (
                     <>

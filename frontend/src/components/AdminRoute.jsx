@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 
 function AdminRoute({ children }) {
+    // Admin auth guard
     const token = localStorage.getItem("token");
 
     if (!token) {

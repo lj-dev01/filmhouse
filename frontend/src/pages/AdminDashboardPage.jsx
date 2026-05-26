@@ -7,10 +7,12 @@ import AdminShowtimesTab from "../components/admin/AdminShowtimesTab";
 import AdminUsersTab from "../components/admin/AdminUsersTab";
 
 function AdminDashboardPage() {
+    // Dashboard tab state
     const [activeTab, setActiveTab] = useState("bookings");
     const [adminAuthMessage, setAdminAuthMessage] = useState("");
     const navigate = useNavigate();
 
+    // Admin auth feedback
     function handleAuthRequired() {
         setAdminAuthMessage("Login required. Please log in to access the admin dashboard");
     }
@@ -26,17 +28,20 @@ function AdminDashboardPage() {
 
     return (
         <section className="admin-dashboard-page">
+            {/* Dashboard header */}
             <div className="admin-dashboard-header">
                 <h1>Admin Dashboard</h1>
                 <p>Manage FilmHouse system data</p>
             </div>
 
+            {/* Admin auth message */}
             {adminAuthMessage && (
                 <div className="admin-section-messages">
                     <div className="error-message">{adminAuthMessage}</div>
                 </div>
             )}
 
+            {/* Dashboard tabs */}
             <div className="admin-dashboard-tabs">
                 <button
                     className={activeTab === "bookings" ? "admin-dashboard-tab active" : "admin-dashboard-tab"}
@@ -67,6 +72,7 @@ function AdminDashboardPage() {
                 </button>
             </div>
 
+            {/* Dashboard tab content */}
             <div className="admin-dashboard-content">
                 {activeTab === "bookings" && (
                     <AdminBookingsTab

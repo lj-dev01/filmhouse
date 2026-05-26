@@ -4,6 +4,7 @@ import api from "../services/api";
 
 
 function RegisterPage() {
+        // Register form state
         const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -13,6 +14,7 @@ function RegisterPage() {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Password requirements
     const passwordValidation = {
         hasMinLength: formData.password.length >= 12,
         hasUppercase: /[A-Z]/.test(formData.password),
@@ -22,6 +24,7 @@ function RegisterPage() {
 
     const navigate = useNavigate();
 
+    // Form input handling
     function handleChange(event) {
         const {name, value} = event.target;
 
@@ -31,6 +34,7 @@ function RegisterPage() {
         });
     }
 
+    // Register submission
     async function handleSubmit(event) {
         event.preventDefault()
 
@@ -107,9 +111,11 @@ function RegisterPage() {
 
     return (
         <section className="register-page">
+            {/* Register card */}
             <div className="register-card">
                 <h1 className="register-title">Create Account</h1>
 
+                {/* Register form */}
                 <form className="register-form" onSubmit={handleSubmit} noValidate>
                     <div className="form-row">
                         <label htmlFor="username">Username</label>
@@ -140,6 +146,7 @@ function RegisterPage() {
                     <div className="form-row password-row">
                         <label htmlFor="password">Password</label>
 
+                        {/* Password rules */}
                         <div className="password-field-wrapper">
                             <input
                                 type="password"

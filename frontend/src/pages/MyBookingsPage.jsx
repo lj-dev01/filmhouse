@@ -7,11 +7,13 @@ import api from "../services/api";
 function MyBookingsPage() {
     const navigate = useNavigate();
 
+    // Booking list state
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
     const [bookingToCancel, setBookingToCancel] = useState(null);
 
+    // Cancel booking actions
     function handleCancelClick(booking) {
         setBookingToCancel(booking);
     }
@@ -66,6 +68,7 @@ function MyBookingsPage() {
         }
     }
 
+    // Load user bookings
     useEffect(() => {
         async function fetchBookings() {
             const token = localStorage.getItem("token");
@@ -171,11 +174,13 @@ function MyBookingsPage() {
 
     return (
         <section className="my-bookings-page">
+            {/* Bookings header */}
             <div className="my-bookings-header">
                 <h1>My Bookings</h1>
                 <p>View and manage your cinema bookings.</p>
             </div>
 
+            {/* Bookings list */}
             <div className="my-bookings-list">
                 {bookings.length === 0 ? (
                     <p className="no-bookings-message">You have no bookings yet.</p>
@@ -190,6 +195,7 @@ function MyBookingsPage() {
                 )}
             </div>
 
+            {/* Cancel booking modal */}
             {bookingToCancel && (
                 <div className="cancel-booking-overlay">
                     <div className="cancel-booking-modal">

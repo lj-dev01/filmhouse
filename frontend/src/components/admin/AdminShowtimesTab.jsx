@@ -2,18 +2,22 @@ import { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 
 function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
+    // Showtimes data state
     const modalRef = useRef(null);
     const [movies, setMovies] = useState([]);
     const [screens, setScreens] = useState([]);
     const [movieShowtimes, setMovieShowtimes] = useState({});
 
+    // Showtimes feedback state
     const [loadingShowtimes, setLoadingShowtimes] = useState(false);
     const [showtimesError, setShowtimesError] = useState("");
     const [showtimesSuccess, setShowtimesSuccess] = useState("");
 
+    // Showtimes modal state
     const [movieToEditShowtimes, setMovieToEditShowtimes] = useState(null);
     const [showtimeToDelete, setShowtimeToDelete] = useState(null);
 
+    // New showtime form state
     const [newShowtime, setNewShowtime] = useState({
         screen_id: "",
         showtime_date: "",
@@ -21,11 +25,13 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
         ticket_price: "",
     });
 
+    // Showtime message helpers
     function clearShowtimeMessages() {
         setShowtimesError("");
         setShowtimesSuccess("");
     }
 
+    // Auto-clear messages
     useEffect(() => {
         if (showtimesSuccess || showtimesError) {
             const timer = setTimeout(() => {
@@ -36,12 +42,14 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
         }
     }, [showtimesSuccess, showtimesError]);
 
+    // Keep modal messages visible
     useEffect(() => {
         if (movieToEditShowtimes && modalRef.current && (showtimesSuccess || showtimesError)) {
             modalRef.current.scrollTop = 0;
         }
     }, [movieToEditShowtimes, showtimesSuccess, showtimesError]);
 
+    // Load showtime data
     useEffect(() => {
         async function fetchShowtimeData() {
             try {
@@ -71,6 +79,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
         fetchShowtimeData();
     }, []);
 
+    // Edit showtimes modal actions
     function handleEditShowtimesClick(movie) {
         clearShowtimeMessages();
         setMovieToEditShowtimes(movie);
@@ -96,6 +105,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
         });
     }
 
+    // Add showtime
     async function handleAddShowtime(event) {
         event.preventDefault();
         clearShowtimeMessages();
@@ -150,6 +160,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
         }
     }
 
+    // Delete showtime actions
     function handleDeleteShowtimeClick(showtime) {
         clearShowtimeMessages();
         setShowtimeToDelete(showtime);
@@ -201,6 +212,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
     return (
         <>
             <div>
+                {/* Admin showtimes header */}
                 <div className="admin-section-header">
                     <div>
                         <h2>All Showtimes</h2>
@@ -210,6 +222,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
 
                 {loadingShowtimes && <div>Loading showtimes...</div>}
 
+                {/* Admin showtimes table */}
                 <div className="admin-table-wrapper">
                     <table className="admin-table">
                         <thead>
@@ -281,6 +294,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             </div>
 
+            {/* Edit showtimes modal */}
             {movieToEditShowtimes && (
                 <div className="cancel-booking-overlay">
                     <div
@@ -300,6 +314,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
                             <div className="error-message">{showtimesError}</div>
                         )}
 
+                        {/* Existing showtimes */}
                         <div className="admin-existing-showtimes">
                             <h3>Existing Showtimes</h3>
 
@@ -352,6 +367,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
                             )}
                         </div>
 
+                        {/* Add showtime form */}
                         <form
                             className="admin-movie-form"
                             onSubmit={handleAddShowtime}
@@ -417,6 +433,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             )}
 
+            {/* Delete showtime modal */}
             {showtimeToDelete && (
                 <div className="cancel-booking-overlay">
                     <div className="cancel-booking-modal">

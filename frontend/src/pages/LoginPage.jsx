@@ -4,6 +4,7 @@ import api from "../services/api";
 
 
 function LoginPage() {
+    // Login form state
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -14,6 +15,7 @@ function LoginPage() {
 
     const navigate = useNavigate();
 
+    // Form input handling
     function handleChange(event) {
         const { name, value } = event.target;
 
@@ -23,6 +25,7 @@ function LoginPage() {
         });
     }
 
+    // Login submission
     async function handleSubmit(event) {
         event.preventDefault();
 
@@ -68,9 +71,11 @@ function LoginPage() {
 
     return (
         <section className="login-page">
+            {/* Login card */}
             <div className="login-card">
                 <h1 className="login-title">Login</h1>
 
+                {/* Login form */}
                 <form className="login-form" onSubmit={handleSubmit} noValidate>
                     <div className="form-row">
                         <label htmlFor="email">Email</label>

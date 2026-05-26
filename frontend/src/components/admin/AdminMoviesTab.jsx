@@ -2,18 +2,22 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 
 function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
+    // Admin movies state
     const [adminMovies, setAdminMovies] = useState([]);
     const [loadingMovies, setLoadingMovies] = useState(false);
     const [moviesError, setMoviesError] = useState("");
     const [moviesSuccess, setMoviesSuccess] = useState("");
 
+    // Add movie modal state
     const [showAddMovieModal, setShowAddMovieModal] = useState(false);
     const [showCancelAddMoviePrompt, setShowCancelAddMoviePrompt] = useState(false);
 
+    // Edit and delete movie modal state
     const [movieToDelete, setMovieToDelete] = useState(null);
     const [movieToEdit, setMovieToEdit] = useState(null);
     const [showCancelEditMoviePrompt, setShowCancelEditMoviePrompt] = useState(false);
 
+    // Movie form template
     const emptyMovieForm = {
         title: "",
         genre: "",
@@ -27,6 +31,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
     const [newMovie, setNewMovie] = useState(emptyMovieForm);
     const [editMovie, setEditMovie] = useState(emptyMovieForm);
 
+    // Movie message helpers
     function clearMovieMessages() {
         setMoviesError("");
         setMoviesSuccess("");
@@ -38,6 +43,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         }
     }
 
+    // Auto-clear messages
     useEffect(() => {
         if (moviesSuccess || moviesError) {
             const timer = setTimeout(() => {
@@ -48,6 +54,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         }
     }, [moviesSuccess, moviesError]);
 
+    // Load admin movies
     useEffect(() => {
         async function fetchAdminMovies() {
             try {
@@ -65,6 +72,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         fetchAdminMovies();
     }, []);
 
+    // Movie form input handling
     function handleNewMovieChange(event) {
         const { name, value } = event.target;
         setNewMovie({ ...newMovie, [name]: value });
@@ -75,6 +83,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         setEditMovie({ ...editMovie, [name]: value });
     }
 
+    // Add movie
     async function handleAddMovie(event) {
         event.preventDefault();
         clearMovieMessages();
@@ -121,6 +130,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         }
     }
 
+    // Edit movie
     function handleEditMovieClick(movie) {
         clearMovieMessages();
 
@@ -186,6 +196,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         }
     }
 
+    // Delete movie
     function handleDeleteMovieClick(movie) {
         clearMovieMessages();
         setMovieToDelete(movie);
@@ -233,6 +244,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         }
     }
 
+    // Discard form actions
     function discardAddMovieForm() {
         setNewMovie(emptyMovieForm);
         setShowAddMovieModal(false);
@@ -247,6 +259,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
     return (
         <>
             <div>
+                {/* Admin movies header */}
                 <div className="admin-section-header">
                     <div>
                         <h2>All Movies</h2>
@@ -264,10 +277,12 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
                     </button>
                 </div>
 
+                {/* Admin movies messages */}
                 {loadingMovies && <p>Loading movies...</p>}
                 {moviesSuccess && <div className="success-message">{moviesSuccess}</div>}
                 {moviesError && <div className="error-message">{moviesError}</div>}
 
+                {/* Admin movies table */}
                 <div className="admin-table-wrapper">
                     <table className="admin-table">
                         <thead>
@@ -319,6 +334,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             </div>
 
+            {/* Add movie modal */}
             {showAddMovieModal && (
                 <div className="cancel-booking-overlay">
                     <div className="admin-movie-modal">
@@ -351,6 +367,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             )}
 
+            {/* Discard add movie modal */}
             {showCancelAddMoviePrompt && (
                 <div className="cancel-booking-overlay">
                     <div className="cancel-booking-modal">
@@ -377,6 +394,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             )}
 
+            {/* Delete movie modal */}
             {movieToDelete && (
                 <div className="cancel-booking-overlay">
                     <div className="cancel-booking-modal">
@@ -409,6 +427,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             )}
 
+            {/* Edit movie modal */}
             {movieToEdit && (
                 <div className="cancel-booking-overlay">
                     <div className="admin-movie-modal">
@@ -441,6 +460,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             )}
 
+            {/* Discard edit movie modal */}
             {showCancelEditMoviePrompt && (
                 <div className="cancel-booking-overlay">
                     <div className="cancel-booking-modal">

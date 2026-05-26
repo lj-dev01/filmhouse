@@ -1,6 +1,7 @@
 function MyBookingCard({ booking, onCancelClick }) {
     return (
         <article className="my-booking-card">
+            {/* Booking details */}
             <div className="my-booking-card-main">
                 <div className="my-booking-card-title-row">
                     <h2>{booking.movieTitle}</h2>
@@ -18,11 +19,13 @@ function MyBookingCard({ booking, onCancelClick }) {
                 </div>
             </div>
 
+            {/* Booking reference */}
             <div className="my-booking-reference-section">
                 <span>Booking Reference</span>
                 <strong>{booking.reference}</strong>
             </div>
 
+            {/* Booking actions */}
             <div className="my-booking-card-actions">
                 {booking.status === "active" ? (
                     <button

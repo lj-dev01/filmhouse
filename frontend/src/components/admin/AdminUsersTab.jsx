@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 
 function AdminUsersTab({ onAuthRequired, onAuthExpired }) {
+    // Admin users state
     const [adminUsers, setAdminUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
     const [usersError, setUsersError] = useState("");
 
+    // Load users
     useEffect(() => {
         async function fetchAdminUsers() {
             const token = localStorage.getItem("token");
@@ -53,6 +55,7 @@ function AdminUsersTab({ onAuthRequired, onAuthExpired }) {
 
     return (
         <div>
+            {/* Admin users header */}
             <div className="admin-section-header">
                 <div>
                     <h2>All Users</h2>
@@ -60,9 +63,11 @@ function AdminUsersTab({ onAuthRequired, onAuthExpired }) {
                 </div>
             </div>
 
+            {/* Admin users messages */}
             {loadingUsers && <p>Loading users...</p>}
             {usersError && <p className="error-message">{usersError}</p>}
 
+            {/* Admin users table */}
             <div className="admin-table-wrapper">
                 <table className="admin-table">
                     <thead>

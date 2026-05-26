@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 function MovieCard({ movie }) {
     return (
         <article className="movie-card">
+            {/* Movie poster */}
             <div className="movie-poster-wrapper">
                 {movie.poster_url ? (
                     <img
@@ -17,6 +18,7 @@ function MovieCard({ movie }) {
                 )}
             </div>
 
+            {/* Movie summary */}
             <div className="movie-card-content">
                 <h2>{movie.title}</h2>
 

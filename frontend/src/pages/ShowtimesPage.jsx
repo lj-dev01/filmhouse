@@ -6,9 +6,11 @@ import ShowtimesTable from "../components/ShowtimesTable";
 import BookingForm from "../components/BookingForm";
 
 function ShowtimesPage() {
+    // Route data
     const { movieId } = useParams();
     const navigate = useNavigate();
 
+    // Movie and showtime state
     const [movie, setMovie] = useState(null);
     const [showtimes, setShowtimes] = useState([]);
     const [selectedShowtime, setSelectedShowtime] = useState(null);
@@ -16,10 +18,12 @@ function ShowtimesPage() {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Booking state
     const [bookingSuccess, setBookingSuccess] = useState("");
     const [bookingError, setBookingError] = useState("");
     const [bookingNotice, setBookingNotice] = useState("");
 
+    // Load movie and showtimes
     useEffect(() => {
         async function fetchData() {
             try {
@@ -38,6 +42,7 @@ function ShowtimesPage() {
         fetchData();
     }, [movieId]);
 
+    // Booking panel actions
     function handleBookClick(showtime) {
         const token = localStorage.getItem("token");
 
@@ -68,6 +73,7 @@ function ShowtimesPage() {
         setTicketCount((current) => Math.max(1, current - 1));
     }
 
+    // Confirm booking
     async function handleConfirmBooking() {
         setBookingSuccess("");
         setBookingError("");
@@ -111,6 +117,7 @@ function ShowtimesPage() {
         }
     }
 
+    // Loading and error states
     if (loading) {
         return <section className="showtimes-page">Loading showtimes...</section>;
     }
@@ -121,10 +128,12 @@ function ShowtimesPage() {
 
     return (
         <section className="showtimes-page">
+            {/* Back navigation */}
             <Link to="/movies" className="back-link">
                 ← Back to Movies
             </Link>
 
+            {/* Showtimes layout */}
             <div className="showtimes-layout">
                 <div className="showtimes-poster-wrapper">
                     {movie?.poster_url ? (
@@ -151,6 +160,7 @@ function ShowtimesPage() {
                 </div>
             </div>
 
+            {/* Booking form */}
             <BookingForm
                 selectedShowtime={selectedShowtime}
                 movie={movie}
