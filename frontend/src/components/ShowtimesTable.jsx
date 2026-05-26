@@ -1,4 +1,4 @@
-function ShowtimesTable({ showtimes, bookingNotice, onBookClick }) {
+function ShowtimesTable({ showtimes, bookingNotice, isAdmin, onBookClick }) {
     return (
         <div className="available-showtimes">
             {/* Showtimes heading */}
@@ -75,6 +75,7 @@ function ShowtimesTable({ showtimes, bookingNotice, onBookClick }) {
 
                                 <button
                                     className="book-now-button"
+                                    disabled={isAdmin}
                                     onClick={() => onBookClick(showtime)}
                                 >
                                     Book
@@ -83,6 +84,13 @@ function ShowtimesTable({ showtimes, bookingNotice, onBookClick }) {
                         );
                     })}
                 </div>
+            )}
+
+            {/* Admin booking message */}
+            {isAdmin && (
+                <p className="admin-booking-notice">
+                    Admins cannot make bookings from this page. Please log in as a regular user to book tickets.
+                </p>
             )}
         </div>
     );

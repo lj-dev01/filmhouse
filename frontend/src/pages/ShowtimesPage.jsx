@@ -23,6 +23,21 @@ function ShowtimesPage() {
     const [bookingError, setBookingError] = useState("");
     const [bookingNotice, setBookingNotice] = useState("");
 
+    // Current user role
+    const token = localStorage.getItem("token");
+    let userRole = null;
+
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            userRole = payload.role;
+        } catch {
+            localStorage.removeItem("token");
+        }
+    }
+
+    const isAdmin = userRole === "admin";
+
     // Load movie and showtimes
     useEffect(() => {
         async function fetchData() {
@@ -45,6 +60,11 @@ function ShowtimesPage() {
     // Booking panel actions
     function handleBookClick(showtime) {
         const token = localStorage.getItem("token");
+
+        if (isAdmin) {
+            setBookingNotice("Admins cannot make bookings from this page. Log in as a regular user to book tickets.");
+            return;
+        }
 
         if (!token) {
             setBookingNotice("Login required. Please log in to proceed with booking.");
@@ -155,6 +175,7 @@ function ShowtimesPage() {
                     <ShowtimesTable
                         showtimes={showtimes}
                         bookingNotice={bookingNotice}
+                        isAdmin={isAdmin}
                         onBookClick={handleBookClick}
                     />
                 </div>

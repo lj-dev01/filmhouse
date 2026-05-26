@@ -668,6 +668,17 @@ body {
     color: #111;
 }
 
+.book-now-button:disabled {
+    border-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.35);
+    cursor: not-allowed;
+}
+
+.book-now-button:disabled:hover {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.35);
+}
+
 .no-showtimes-message {
     color: rgba(255, 255, 255, 0.45);
 }
@@ -856,6 +867,12 @@ body {
     color: #ff8a8a;
     font-weight: 700;
     margin: 0 0 18px;
+}
+
+.admin-booking-notice {
+    color: #ff8a8a;
+    font-weight: 700;
+    margin: 18px 0 0;
 }
 
 /* Showtimes Page - Responsive */
