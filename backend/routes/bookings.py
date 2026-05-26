@@ -44,6 +44,12 @@ def create_booking(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    if current_user.role == "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admins cannot create customer bookings"
+        )
+
     showtime = db.query(Showtime).filter(Showtime.id == booking_data.showtime_id).first()
 
     if showtime is None:

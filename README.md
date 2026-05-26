@@ -78,8 +78,8 @@ Password: AdminPassword123
 
 ### Regular Users
 
-Email: john@example.com
+Email: tester1@example.com
 Password: Password1234
 
-Email: jane@example.com
+Email: tester2@example.com
 Password: Password1234
