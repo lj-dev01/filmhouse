@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -13,6 +15,27 @@ router = APIRouter(
     prefix="/showtimes",
     tags=["Showtimes"]
 )
+
+
+def ensure_screen_available(
+    db: Session,
+    screen_id: int,
+    start_time: datetime,
+    showtime_id: int | None = None
+):
+    query = db.query(Showtime).filter(
+        Showtime.screen_id == screen_id,
+        Showtime.start_time == start_time
+    )
+
+    if showtime_id is not None:
+        query = query.filter(Showtime.id != showtime_id)
+
+    if query.first() is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This screen already has a showtime at that date and time."
+        )
 
 
 @router.get("/", response_model=list[ShowtimeResponse])
@@ -60,6 +83,12 @@ def create_showtime(
             detail="Screen not found"
         )
 
+    ensure_screen_available(
+        db,
+        showtime_data.screen_id,
+        showtime_data.start_time
+    )
+
     new_showtime = Showtime(**showtime_data.model_dump())
 
     db.add(new_showtime)
@@ -83,7 +112,19 @@ def update_showtime(
             detail="Showtime not found"
         )
 
-    for key, value in showtime_data.model_dump(exclude_unset=True).items():
+    updates = showtime_data.model_dump(exclude_unset=True)
+    updated_screen_id = updates.get("screen_id", showtime.screen_id)
+    updated_start_time = updates.get("start_time", showtime.start_time)
+
+    if "screen_id" in updates or "start_time" in updates:
+        ensure_screen_available(
+            db,
+            updated_screen_id,
+            updated_start_time,
+            showtime_id=showtime.id
+        )
+
+    for key, value in updates.items():
         setattr(showtime, key, value)
 
     db.commit()

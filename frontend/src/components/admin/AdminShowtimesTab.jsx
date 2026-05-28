@@ -36,7 +36,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
         if (showtimesSuccess || showtimesError) {
             const timer = setTimeout(() => {
                 clearShowtimeMessages();
-            }, 1500);
+            }, 2000);
 
             return () => clearTimeout(timer);
         }
@@ -153,9 +153,17 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
 
             setShowtimesSuccess("Showtime added successfully.");
         } catch (error) {
+            const detail = error.response?.data?.detail || "";
+
+            if (detail === "This screen already has a showtime at that date and time.") {
+                setShowtimesError(
+                    "Failed to add showtime. This screen already has a showtime at that date and time."
+                );
+                return;
+            }
+
             setShowtimesError(
-                error.response?.data?.detail ||
-                    "Failed to add showtime. Please try again."
+                detail || "Failed to add showtime. Please try again."
             );
         }
     }
