@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, date
 
 from database.database import SessionLocal, Base, engine
 from models.user import User
@@ -86,28 +86,8 @@ movie_by_title = {movie.title: movie for movie in db.query(Movie).all()}
 screen_by_name = {screen.screen_name: screen for screen in db.query(Screen).all()}
 
 
-def get_showtime_base_date(months_ahead=3):
-    today = date.today()
-    month_index = today.month - 1 + months_ahead
-    year = today.year + month_index // 12
-    month = month_index % 12 + 1
-
-    return date(year, month, 1)
-
-
-showtime_base_date = get_showtime_base_date()
-movie_showtime_offsets = {
-    movie.title: index
-    for index, movie in enumerate(movies)
-}
-
-
-def create_showtime(movie_title, screen_name, days_from_now, hour, minute, price):
+def create_showtime(movie_title, screen_name, showtime_date, hour, minute, price):
     screen = screen_by_name[screen_name]
-    movie_offset = movie_showtime_offsets[movie_title]
-    showtime_date = showtime_base_date + timedelta(
-        days=movie_offset + days_from_now - 1
-    )
 
     return Showtime(
         movie_id=movie_by_title[movie_title].id,
@@ -125,62 +105,62 @@ def create_showtime(movie_title, screen_name, days_from_now, hour, minute, price
 
 
 showtimes = [
-    create_showtime("Apex Heart", "Screen 1", 1, 13, 0, 11.99),
-    create_showtime("Apex Heart", "Screen 4", 1, 18, 0, 15.99),
-    create_showtime("Apex Heart", "Screen 5", 2, 20, 30, 16.99),
+    create_showtime("Apex Heart", "Screen 1", date(2026, 8, 8), 13, 0, 11.99),
+    create_showtime("Apex Heart", "Screen 4", date(2026, 8, 8), 18, 0, 15.99),
+    create_showtime("Apex Heart", "Screen 5", date(2026, 8, 15), 20, 30, 16.99),
 
-    create_showtime("Beyond the Last Orbit", "Screen 3", 1, 15, 0, 10.99),
-    create_showtime("Beyond the Last Orbit", "Screen 5", 2, 18, 30, 15.99),
+    create_showtime("Beyond the Last Orbit", "Screen 3", date(2026, 8, 6), 15, 0, 10.99),
+    create_showtime("Beyond the Last Orbit", "Screen 5", date(2026, 8, 14), 18, 30, 15.99),
 
-    create_showtime("Nani and the Starling", "Screen 1", 1, 10, 30, 8.99),
-    create_showtime("Nani and the Starling", "Screen 2", 1, 13, 0, 9.99),
-    create_showtime("Nani and the Starling", "Screen 6", 2, 15, 30, 12.99),
+    create_showtime("Nani and the Starling", "Screen 1", date(2026, 8, 8), 10, 30, 8.99),
+    create_showtime("Nani and the Starling", "Screen 2", date(2026, 8, 9), 13, 0, 9.99),
+    create_showtime("Nani and the Starling", "Screen 6", date(2026, 8, 16), 15, 30, 12.99),
 
-    create_showtime("Starlight Rhythm", "Screen 1", 1, 14, 0, 11.99),
+    create_showtime("Starlight Rhythm", "Screen 1", date(2026, 8, 7), 14, 0, 11.99),
 
-    create_showtime("Pixel Planet Adventure", "Screen 2", 1, 12, 30, 9.99),
-    create_showtime("Pixel Planet Adventure", "Screen 7", 2, 17, 30, 12.99),
+    create_showtime("Pixel Planet Adventure", "Screen 2", date(2026, 8, 9), 12, 30, 9.99),
+    create_showtime("Pixel Planet Adventure", "Screen 7", date(2026, 8, 17), 17, 30, 12.99),
 
-    create_showtime("Primeval Island", "Screen 2", 1, 12, 0, 11.99),
-    create_showtime("Primeval Island", "Screen 3", 1, 18, 30, 12.99),
-    create_showtime("Primeval Island", "Screen 5", 2, 19, 30, 16.99),
+    create_showtime("Primeval Island", "Screen 2", date(2026, 8, 8), 12, 0, 11.99),
+    create_showtime("Primeval Island", "Screen 3", date(2026, 8, 13), 18, 30, 12.99),
+    create_showtime("Primeval Island", "Screen 5", date(2026, 8, 20), 19, 30, 16.99),
 
-    create_showtime("Sands of Veyra", "Screen 2", 1, 14, 30, 11.99),
-    create_showtime("Sands of Veyra", "Screen 5", 1, 19, 0, 16.99),
-    create_showtime("Sands of Veyra", "Screen 4", 2, 20, 0, 15.99),
+    create_showtime("Sands of Veyra", "Screen 2", date(2026, 8, 9), 14, 30, 11.99),
+    create_showtime("Sands of Veyra", "Screen 5", date(2026, 8, 15), 19, 0, 16.99),
+    create_showtime("Sands of Veyra", "Screen 4", date(2026, 8, 22), 20, 0, 15.99),
 
-    create_showtime("Moonspell Academy", "Screen 1", 1, 15, 0, 11.99),
-    create_showtime("Moonspell Academy", "Screen 4", 1, 19, 0, 15.99),
+    create_showtime("Moonspell Academy", "Screen 1", date(2026, 8, 10), 15, 0, 11.99),
+    create_showtime("Moonspell Academy", "Screen 4", date(2026, 8, 16), 19, 0, 15.99),
 
-    create_showtime("The Moorland Vow", "Screen 2", 1, 16, 45, 10.99),
+    create_showtime("The Moorland Vow", "Screen 2", date(2026, 8, 12), 16, 45, 10.99),
 
-    create_showtime("The Editor's Return", "Screen 1", 1, 13, 30, 10.99),
-    create_showtime("The Editor's Return", "Screen 2", 2, 18, 15, 11.99),
+    create_showtime("The Editor's Return", "Screen 1", date(2026, 8, 11), 13, 30, 10.99),
+    create_showtime("The Editor's Return", "Screen 2", date(2026, 8, 18), 18, 15, 11.99),
 
-    create_showtime("The Ashcroft Haunting", "Screen 3", 1, 21, 0, 12.99),
-    create_showtime("The Ashcroft Haunting", "Screen 2", 2, 22, 0, 12.99),
+    create_showtime("The Ashcroft Haunting", "Screen 3", date(2026, 8, 9), 21, 0, 12.99),
+    create_showtime("The Ashcroft Haunting", "Screen 2", date(2026, 8, 14), 22, 0, 12.99),
 
-    create_showtime("Pawshire Detectives", "Screen 1", 1, 11, 0, 9.99),
+    create_showtime("Pawshire Detectives", "Screen 1", date(2026, 8, 10), 11, 0, 9.99),
 
-    create_showtime("The Quiet Equation", "Screen 2", 2, 20, 30, 12.99),
+    create_showtime("The Quiet Equation", "Screen 2", date(2026, 8, 22), 20, 30, 12.99),
 
-    create_showtime("Shadow Protocol", "Screen 1", 1, 14, 0, 11.99),
-    create_showtime("Shadow Protocol", "Screen 5", 1, 19, 30, 16.99),
+    create_showtime("Shadow Protocol", "Screen 1", date(2026, 8, 12), 14, 0, 11.99),
+    create_showtime("Shadow Protocol", "Screen 5", date(2026, 8, 8), 19, 30, 16.99),
 
-    create_showtime("The Nova Quartet", "Screen 1", 1, 12, 30, 11.99),
-    create_showtime("The Nova Quartet", "Screen 5", 1, 20, 30, 16.99),
+    create_showtime("The Nova Quartet", "Screen 1", date(2026, 8, 13), 12, 30, 11.99),
+    create_showtime("The Nova Quartet", "Screen 5", date(2026, 8, 19), 20, 30, 16.99),
 
-    create_showtime("The Hollow Parish", "Screen 2", 1, 20, 0, 12.99),
-    create_showtime("The Hollow Parish", "Screen 3", 2, 21, 15, 12.99),
+    create_showtime("The Hollow Parish", "Screen 2", date(2026, 8, 11), 20, 0, 12.99),
+    create_showtime("The Hollow Parish", "Screen 3", date(2026, 8, 18), 21, 15, 12.99),
 
-    create_showtime("Vanishing Act", "Screen 1", 1, 16, 15, 11.99),
-    create_showtime("Vanishing Act", "Screen 2", 2, 19, 45, 12.99),
+    create_showtime("Vanishing Act", "Screen 1", date(2026, 8, 14), 16, 15, 11.99),
+    create_showtime("Vanishing Act", "Screen 2", date(2026, 8, 21), 19, 45, 12.99),
 
-    create_showtime("Dragonkeeper's Oath", "Screen 6", 2, 16, 45, 13.99),
+    create_showtime("Dragonkeeper's Oath", "Screen 6", date(2026, 8, 17), 16, 45, 13.99),
 
-    create_showtime("Neon Aegis", "Screen 1", 1, 17, 45, 11.99),
-    create_showtime("Neon Aegis", "Screen 5", 1, 21, 0, 16.99),
-    create_showtime("Neon Aegis", "Screen 4", 2, 18, 30, 15.99),
+    create_showtime("Neon Aegis", "Screen 1", date(2026, 8, 9), 17, 45, 11.99),
+    create_showtime("Neon Aegis", "Screen 5", date(2026, 8, 23), 21, 0, 16.99),
+    create_showtime("Neon Aegis", "Screen 4", date(2026, 8, 13), 18, 30, 15.99),
 ]
 
 db.add_all(showtimes)
