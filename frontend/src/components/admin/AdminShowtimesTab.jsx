@@ -291,7 +291,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
                                                     handleEditShowtimesClick(movie)
                                                 }
                                             >
-                                                Edit
+                                                Manage
                                             </button>
                                         </td>
                                     </tr>

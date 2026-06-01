@@ -167,7 +167,7 @@ function MyBookingsPage() {
     if (errorMessage) {
         return (
             <section className="my-bookings-page">
-                {errorMessage}
+                <div className="error-message">{errorMessage}</div>
             </section>
         );
     }
