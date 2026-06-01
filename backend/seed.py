@@ -9,10 +9,13 @@ from models.booking import Booking
 
 from services.auth_service import hash_password
 
+# Ensure database tables exist
 Base.metadata.create_all(bind=engine)
 
+# Seed script database session
 db = SessionLocal()
 
+# Clear existing data before reseeding
 db.query(Booking).delete()
 db.query(Showtime).delete()
 db.query(Screen).delete()
@@ -21,6 +24,7 @@ db.query(User).delete()
 
 db.commit()
 
+# Demo users
 admin_user = User(
     username="admin",
     email="admin@filmhouse.com",
@@ -44,6 +48,7 @@ user_two = User(
 
 users = [admin_user, user_one, user_two]
 
+# Demo movie catalogue
 movies = [
     Movie(title="Apex Heart", genre="Sports Drama", age_rating="12A", duration_minutes=130, description="A retired racing champion returns to mentor a fearless rookie, confronting old rivalries, personal regrets and the brutal pressure of one final season at the top.", release_date=date(2025, 6, 27), poster_url="/posters/apex_heart.jpg"),
     Movie(title="Beyond the Last Orbit", genre="Sci-Fi", age_rating="12", duration_minutes=169, description="As Earth faces environmental collapse, a team of astronauts crosses an untested gateway in search of a new home for humanity.", release_date=date(2014, 11, 7), poster_url="/posters/beyond_the_last_orbit.jpg"),
@@ -66,6 +71,7 @@ movies = [
     Movie(title="Neon Aegis", genre="Sci-Fi", age_rating="12", duration_minutes=125, description="When an advanced digital intelligence breaks into the physical world, a programmer must enter a glowing virtual battlefield to prevent a technological takeover.", release_date=date(2025, 10, 10), poster_url="/posters/neon_aegis.jpg"),
 ]
 
+# Demo cinema screens
 screens = [
     Screen(screen_name="Screen 1", capacity=100, screen_type="Standard"),
     Screen(screen_name="Screen 2", capacity=120, screen_type="Standard"),
@@ -82,10 +88,12 @@ db.add_all(screens)
 
 db.commit()
 
+# Lookup maps for linking showtimes to seeded movies and screens
 movie_by_title = {movie.title: movie for movie in db.query(Movie).all()}
 screen_by_name = {screen.screen_name: screen for screen in db.query(Screen).all()}
 
 
+# Showtime factory
 def create_showtime(movie_title, screen_name, showtime_date, hour, minute, price):
     screen = screen_by_name[screen_name]
 
@@ -104,6 +112,7 @@ def create_showtime(movie_title, screen_name, showtime_date, hour, minute, price
     )
 
 
+# Demo showtimes
 showtimes = [
     create_showtime("Apex Heart", "Screen 1", date(2026, 8, 8), 13, 0, 11.99),
     create_showtime("Apex Heart", "Screen 4", date(2026, 8, 8), 18, 0, 15.99),
@@ -166,6 +175,7 @@ showtimes = [
 db.add_all(showtimes)
 db.commit()
 
+# Demo bookings
 bookings = [
     # tester1 bookings
     Booking(
@@ -242,6 +252,7 @@ bookings = [
     )
 ]
 
+# Only active demo bookings should reduce available seats
 active_bookings = [booking for booking in bookings if booking.booking_status == "active"]
 
 for booking in active_bookings:

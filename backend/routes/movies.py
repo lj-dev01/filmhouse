@@ -15,11 +15,13 @@ router = APIRouter(
     tags=["Movies"]
 )
 
+# List every movie
 @router.get("/", response_model=list[MovieResponse])
 def get_movies(db: Session = Depends(get_db)):
     movies = db.query(Movie).all()
     return movies
 
+# Get one movie by id
 @router.get("/{movie_id}", response_model=MovieResponse)
 def get_movie(movie_id: int, db: Session = Depends(get_db)):
     movie = db.query(Movie).filter(Movie.id == movie_id).first()
@@ -32,6 +34,7 @@ def get_movie(movie_id: int, db: Session = Depends(get_db)):
 
     return movie
 
+# Create a movie as an admin
 @router.post("/", response_model=MovieResponse, status_code=status.HTTP_201_CREATED)
 def create_movie(
     movie_data: MovieCreate,
@@ -46,6 +49,7 @@ def create_movie(
 
     return new_movie
 
+# Update a movie as an admin
 @router.put("/{movie_id}", response_model=MovieResponse)
 def update_movie(
     movie_id: int,
@@ -61,6 +65,7 @@ def update_movie(
             detail="Movie not found"
         )
 
+    # Apply only the submitted fields
     for key, value in movie_data.model_dump(exclude_unset=True).items():
         setattr(movie, key, value)
 
@@ -69,6 +74,7 @@ def update_movie(
 
     return movie
 
+# Delete a movie as an admin
 @router.delete("/{movie_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_movie(
     movie_id: int,
@@ -83,6 +89,7 @@ def delete_movie(
             detail="Movie not found"
         )
 
+    # Cancel bookings and remove showtimes tied to the deleted movie
     showtimes = db.query(Showtime).filter(Showtime.movie_id == movie_id).all()
     showtime_ids = [showtime.id for showtime in showtimes]
 

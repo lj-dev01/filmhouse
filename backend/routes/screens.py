@@ -12,11 +12,13 @@ router = APIRouter(
     tags=["Screens"]
 )
 
+# List every screen
 @router.get("/", response_model=list[ScreenResponse])
 def get_screens(db: Session = Depends(get_db)):
     screens = db.query(Screen).all()
     return screens
 
+# Create a screen as an admin
 @router.post("/", response_model=ScreenResponse, status_code=status.HTTP_201_CREATED)
 def create_screen(
     screen_data: ScreenCreate,
@@ -31,6 +33,7 @@ def create_screen(
 
     return new_screen
 
+# Update a screen as an admin
 @router.put("/{screen_id}", response_model=ScreenResponse)
 def update_screen(
     screen_id: int,
@@ -46,6 +49,7 @@ def update_screen(
             detail="Screen not found"
         )
 
+    # Apply only the submitted fields
     for key, value in screen_data.model_dump(exclude_unset=True).items():
         setattr(screen, key, value)
 
@@ -54,6 +58,7 @@ def update_screen(
 
     return screen
 
+# Delete a screen as an admin
 @router.delete("/{screen_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_screen(
     screen_id: int,

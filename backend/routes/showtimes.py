@@ -17,17 +17,20 @@ router = APIRouter(
 )
 
 
+# Screen scheduling guard
 def ensure_screen_available(
     db: Session,
     screen_id: int,
     start_time: datetime,
     showtime_id: int | None = None
 ):
+    # Look for another showtime using the same screen and start time
     query = db.query(Showtime).filter(
         Showtime.screen_id == screen_id,
         Showtime.start_time == start_time
     )
 
+    # Ignore the current showtime during updates
     if showtime_id is not None:
         query = query.filter(Showtime.id != showtime_id)
 
@@ -38,15 +41,18 @@ def ensure_screen_available(
         )
 
 
+# List every showtime
 @router.get("/", response_model=list[ShowtimeResponse])
 def get_showtimes(db: Session = Depends(get_db)):
     showtimes = db.query(Showtime).all()
     return showtimes
 
+# List showtimes for one movie
 @router.get("/movie/{movie_id}", response_model=list[ShowtimeResponse])
 def get_showtimes_by_movie(movie_id: int, db: Session = Depends(get_db)):
     showtimes = db.query(Showtime).filter(Showtime.movie_id == movie_id).all()
 
+    # Add screen details for the frontend display
     return [
         {
             "id": showtime.id,
@@ -61,12 +67,14 @@ def get_showtimes_by_movie(movie_id: int, db: Session = Depends(get_db)):
         for showtime in showtimes
     ]
 
+# Create a showtime as an admin
 @router.post("/", response_model=ShowtimeResponse, status_code=status.HTTP_201_CREATED)
 def create_showtime(
     showtime_data: ShowtimeCreate,
     db: Session = Depends(get_db),
     current_admin: User = Depends(get_current_admin_user)
 ):
+    # Confirm the selected movie exists
     movie = db.query(Movie).filter(Movie.id == showtime_data.movie_id).first()
 
     if movie is None:
@@ -75,6 +83,7 @@ def create_showtime(
             detail="Movie not found"
         )
 
+    # Confirm the selected screen exists
     screen = db.query(Screen).filter(Screen.id == showtime_data.screen_id).first()
 
     if screen is None:
@@ -83,6 +92,7 @@ def create_showtime(
             detail="Screen not found"
         )
 
+    # Prevent double-booking a screen
     ensure_screen_available(
         db,
         showtime_data.screen_id,
@@ -97,6 +107,7 @@ def create_showtime(
 
     return new_showtime
 
+# Update a showtime as an admin
 @router.put("/{showtime_id}", response_model=ShowtimeResponse)
 def update_showtime(
     showtime_id: int,
@@ -113,9 +124,11 @@ def update_showtime(
         )
 
     updates = showtime_data.model_dump(exclude_unset=True)
+    # Use existing values for any fields not included in the update
     updated_screen_id = updates.get("screen_id", showtime.screen_id)
     updated_start_time = updates.get("start_time", showtime.start_time)
 
+    # Re-check availability if the schedule position changed
     if "screen_id" in updates or "start_time" in updates:
         ensure_screen_available(
             db,
@@ -124,6 +137,7 @@ def update_showtime(
             showtime_id=showtime.id
         )
 
+    # Apply only the submitted fields
     for key, value in updates.items():
         setattr(showtime, key, value)
 
@@ -132,6 +146,7 @@ def update_showtime(
 
     return showtime
 
+# Delete a showtime as an admin
 @router.delete("/{showtime_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_showtime(
     showtime_id: int,

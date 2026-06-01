@@ -4,8 +4,10 @@ from sqlalchemy.orm import relationship
 from database.database import Base
 
 class Movie(Base):
+    # Movie catalogue table
     __tablename__ = "movies"
 
+    # Movie details
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     genre = Column(String, nullable=False)
@@ -15,4 +17,5 @@ class Movie(Base):
     release_date = Column(Date, nullable=False)
     poster_url = Column(String, nullable=True)
 
+    # Movie showtimes relationship
     showtimes = relationship("Showtime", back_populates="movie")

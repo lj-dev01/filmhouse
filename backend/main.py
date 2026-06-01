@@ -10,12 +10,14 @@ from models.showtime import Showtime
 from models.booking import Booking
 
 
+# FastAPI application settings
 app = FastAPI(
     title="FILMHOUSE API",
     description="Backend API for the FILMHOUSE cinema booking system",
     version="1.0.0",
 )
 
+# Frontend access settings
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -24,8 +26,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Database table setup
 Base.metadata.create_all(bind=engine)
 
+# API route registration
 app.include_router(auth.router)
 app.include_router(movies.router)
 app.include_router(screens.router)
@@ -33,6 +37,7 @@ app.include_router(showtimes.router)
 app.include_router(bookings.router)
 app.include_router(users.router)
 
+# Health check route
 @app.get("/")
 def root():
    return {"message": "FILMHOUSE API is running"} 
