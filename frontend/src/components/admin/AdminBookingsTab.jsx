@@ -2,15 +2,24 @@ import { useEffect, useState } from "react";
 
 import api from "../../services/api";
 
-function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
+function AdminBookingsTab({ onAdminAction, onAdminApiError }) {
     // Admin bookings state
     const [adminBookings, setAdminBookings] = useState([]);
     const [loadingBookings, setLoadingBookings] = useState(false);
     const [adminError, setAdminError] = useState("");
     const [adminBookingToCancel, setAdminBookingToCancel] = useState(null);
 
+    // Check dashboard auth before showing action modals
+    function canOpenAdminModal() {
+        return onAdminAction?.() ?? true;
+    }
+
     // Cancel booking modal actions
     function handleAdminCancelClick(booking) {
+        if (!canOpenAdminModal()) {
+            return;
+        }
+
         setAdminBookingToCancel(booking);
     }
 
@@ -20,23 +29,10 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
 
     // Confirm admin cancellation
     async function confirmAdminCancelBooking() {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            onAuthRequired?.();
-            setAdminBookingToCancel(null);
-            return;
-        }
-
         try {
             await api.put(
                 `/bookings/admin/${adminBookingToCancel.id}/cancel`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                {}
             );
 
             setAdminBookings((currentBookings) =>
@@ -51,8 +47,7 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
         } catch (error) {
             const detail = error.response?.data?.detail || "";
 
-            if (error.response?.status === 401 || detail.toLowerCase().includes("token")) {
-                onAuthExpired?.();
+            if (onAdminApiError?.(error)) {
                 setAdminBookingToCancel(null);
                 return;
             }
@@ -68,33 +63,14 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
     // Load all bookings
     useEffect(() => {
         async function fetchAdminBookings() {
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                onAuthRequired?.();
-                return;
-            }
-
             try {
                 setLoadingBookings(true);
 
-                const response = await api.get("/bookings/admin/all", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await api.get("/bookings/admin/all");
 
                 setAdminBookings(response.data);
             } catch (error) {
-                const detail = error.response?.data?.detail || "";
-
-                if (error.response?.status === 401 || detail.toLowerCase().includes("token")) {
-                    onAuthExpired?.();
-                    return;
-                }
-
-                if (error.response?.status === 403) {
-                    setAdminError("Access denied. Admin permissions are required");
+                if (onAdminApiError?.(error)) {
                     return;
                 }
 
@@ -105,7 +81,7 @@ function AdminBookingsTab({ onAuthRequired, onAuthExpired }) {
         }
 
         fetchAdminBookings();
-    }, []);
+    }, [onAdminApiError]);
 
     return (
         <>

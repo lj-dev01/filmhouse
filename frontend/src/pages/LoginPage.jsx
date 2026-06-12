@@ -1,7 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import api from "../services/api";
-
+import { setAuthToken } from "../services/auth";
 
 function LoginPage() {
     // Login form state
@@ -12,8 +12,6 @@ function LoginPage() {
 
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-
-    const navigate = useNavigate();
 
     // Form input handling
     function handleChange(event) {
@@ -57,14 +55,14 @@ function LoginPage() {
         try {
             const response = await api.post("/auth/login", formData);
 
-            localStorage.setItem("token", response.data.access_token);
+            setAuthToken(response.data.access_token);
 
             setSuccessMessage("Successfully logged in. Redirecting to home page...");
 
             setTimeout(() => {
                 window.location.href = "/";
             }, 1200);
-        } catch (error) {
+        } catch {
             setErrorMessage("Email or password is invalid.");
         }
     }

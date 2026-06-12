@@ -4,6 +4,12 @@ import api from "../services/api";
 import MovieDetails from "../components/MovieDetails";
 import ShowtimesTable from "../components/ShowtimesTable";
 import BookingForm from "../components/BookingForm";
+import {
+    clearAuthToken,
+    getAuthToken,
+    getTokenPayload,
+    SESSION_EXPIRED_MESSAGE,
+} from "../services/auth";
 
 function ShowtimesPage() {
     // Route data
@@ -24,15 +30,16 @@ function ShowtimesPage() {
     const [bookingNotice, setBookingNotice] = useState("");
 
     // Current user role
-    const token = localStorage.getItem("token");
+    const token = getAuthToken();
     let userRole = null;
 
     if (token) {
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1]));
+        const payload = getTokenPayload(token);
+
+        if (payload) {
             userRole = payload.role;
-        } catch {
-            localStorage.removeItem("token");
+        } else {
+            clearAuthToken();
         }
     }
 
@@ -47,7 +54,7 @@ function ShowtimesPage() {
 
                 setMovie(movieResponse.data);
                 setShowtimes(showtimesResponse.data);
-            } catch (error) {
+            } catch {
                 setErrorMessage("Failed to load showtimes");
             } finally {
                 setLoading(false);
@@ -59,7 +66,7 @@ function ShowtimesPage() {
 
     // Booking panel actions
     function handleBookClick(showtime) {
-        const token = localStorage.getItem("token");
+        const token = getAuthToken();
 
         if (isAdmin) {
             setBookingNotice("Admins cannot make bookings from this page. Log in as a regular user to book tickets.");
@@ -104,11 +111,6 @@ function ShowtimesPage() {
                 {
                     showtime_id: selectedShowtime.id,
                     number_of_tickets: ticketCount,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
                 }
             );
 
@@ -123,8 +125,8 @@ function ShowtimesPage() {
                 error.response?.status === 401 ||
                 message.toLowerCase().includes("token")
             ) {
-                localStorage.removeItem("token");
-                setBookingError("Your session has expired. Redirecting to login...");
+                clearAuthToken();
+                setBookingError(SESSION_EXPIRED_MESSAGE);
 
                 setTimeout(() => {
                     navigate("/login");

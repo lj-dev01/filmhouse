@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import api from "../../services/api";
 
-function AdminUsersTab({ onAuthRequired, onAuthExpired }) {
+function AdminUsersTab({ onAdminApiError }) {
     // Admin users state
     const [adminUsers, setAdminUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
@@ -11,21 +11,10 @@ function AdminUsersTab({ onAuthRequired, onAuthExpired }) {
     // Load users
     useEffect(() => {
         async function fetchAdminUsers() {
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                onAuthRequired?.();
-                return;
-            }
-
             try {
                 setLoadingUsers(true);
 
-                const response = await api.get("/users/admin/all", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await api.get("/users/admin/all");
 
                 const sortedUsers = response.data.sort((a, b) => {
                     if (a.role === "admin" && b.role !== "admin") return -1;
@@ -37,8 +26,7 @@ function AdminUsersTab({ onAuthRequired, onAuthExpired }) {
             } catch (error) {
                 const detail = error.response?.data?.detail || "";
 
-                if (error.response?.status === 401 || detail.toLowerCase().includes("token")) {
-                    onAuthExpired?.();
+                if (onAdminApiError?.(error)) {
                     return;
                 }
 
@@ -51,7 +39,7 @@ function AdminUsersTab({ onAuthRequired, onAuthExpired }) {
         }
 
         fetchAdminUsers();
-    }, []);
+    }, [onAdminApiError]);
 
     return (
         <div>

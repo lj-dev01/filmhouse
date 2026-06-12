@@ -1,23 +1,59 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
+import {
+    AUTH_CHANGE_EVENT,
+    clearAuthToken,
+    getAuthToken,
+    getTokenPayload,
+} from "../services/auth";
+
+// Read token details for navigation display
+function getNavbarAuthState() {
+    const token = getAuthToken();
+
+    if (!token) {
+        return {
+            isLoggedIn: false,
+            role: null,
+        };
+    }
+
+    const payload = getTokenPayload(token);
+
+    if (!payload) {
+        return {
+            isLoggedIn: false,
+            role: null,
+        };
+    }
+
+    return {
+        isLoggedIn: true,
+        role: payload.role,
+    };
+}
 
 function Navbar() {
     // Authentication state
-    const token = localStorage.getItem("token");
+    const [authState, setAuthState] = useState(getNavbarAuthState);
 
-    let role = null;
-
-    if (token) {
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            role = payload.role;
-        } catch {
-            localStorage.removeItem("token");
+    // Keep navigation in sync with login and logout changes
+    useEffect(() => {
+        function refreshAuthState() {
+            setAuthState(getNavbarAuthState());
         }
-    }
+
+        window.addEventListener(AUTH_CHANGE_EVENT, refreshAuthState);
+
+        return () => {
+            window.removeEventListener(AUTH_CHANGE_EVENT, refreshAuthState);
+        };
+    }, []);
 
     // Logout action
     function handleLogout() {
-        localStorage.removeItem("token");
+        clearAuthToken();
         window.location.href = "/login";
     }
 
@@ -29,25 +65,25 @@ function Navbar() {
 
                 <Link to="/movies">Movies</Link>
 
-                {token && role !== "admin" && (
+                {authState.isLoggedIn && authState.role !== "admin" && (
                     <Link to="/my-bookings">My Bookings</Link>
                 )}
 
-                {token && role === "admin" && (
+                {authState.isLoggedIn && authState.role === "admin" && (
                     <Link to="/admin">Admin Dashboard</Link>
                 )}
             </div>
 
             {/* Authentication navigation */}
             <div className="navbar-right">
-                {!token && (
+                {!authState.isLoggedIn && (
                     <>
                         <Link to="/login">Login</Link>
                         <Link to="/register">Register</Link>
                     </>
                 )}
 
-                {token && (
+                {authState.isLoggedIn && (
                     <button onClick={handleLogout}>
                         Logout
                     </button>

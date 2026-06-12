@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 
-function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
+function AdminMoviesTab({ onAdminAction, onAdminApiError }) {
     // Admin movies state
     const [adminMovies, setAdminMovies] = useState([]);
     const [loadingMovies, setLoadingMovies] = useState(false);
@@ -43,6 +43,11 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         }
     }
 
+    // Check dashboard auth before showing action modals
+    function canOpenAdminModal() {
+        return onAdminAction?.() ?? true;
+    }
+
     // Auto-clear messages
     useEffect(() => {
         if (moviesSuccess || moviesError) {
@@ -62,7 +67,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
 
                 const response = await api.get("/movies/");
                 setAdminMovies(response.data);
-            } catch (error) {
+            } catch {
                 setMoviesError("Failed to load movies");
             } finally {
                 setLoadingMovies(false);
@@ -88,13 +93,6 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         event.preventDefault();
         clearMovieMessages();
 
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            onAuthRequired?.();
-            return;
-        }
-
         try {
             const response = await api.post(
                 "/movies/",
@@ -102,11 +100,6 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
                     ...newMovie,
                     duration_minutes: Number(newMovie.duration_minutes),
                     poster_url: newMovie.poster_url || null,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
                 }
             );
 
@@ -118,8 +111,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         } catch (error) {
             const detail = error.response?.data?.detail || "";
 
-            if (error.response?.status === 401 || detail.toLowerCase().includes("token")) {
-                onAuthExpired?.();
+            if (onAdminApiError?.(error)) {
                 return;
             }
 
@@ -132,6 +124,10 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
 
     // Edit movie
     function handleEditMovieClick(movie) {
+        if (!canOpenAdminModal()) {
+            return;
+        }
+
         clearMovieMessages();
 
         setMovieToEdit(movie);
@@ -150,13 +146,6 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         event.preventDefault();
         clearMovieMessages();
 
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            onAuthRequired?.();
-            return;
-        }
-
         try {
             const response = await api.put(
                 `/movies/${movieToEdit.id}`,
@@ -164,11 +153,6 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
                     ...editMovie,
                     duration_minutes: Number(editMovie.duration_minutes),
                     poster_url: editMovie.poster_url || null,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
                 }
             );
 
@@ -184,8 +168,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         } catch (error) {
             const detail = error.response?.data?.detail || "";
 
-            if (error.response?.status === 401 || detail.toLowerCase().includes("token")) {
-                onAuthExpired?.();
+            if (onAdminApiError?.(error)) {
                 return;
             }
 
@@ -198,26 +181,28 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
 
     // Delete movie
     function handleDeleteMovieClick(movie) {
+        if (!canOpenAdminModal()) {
+            return;
+        }
+
         clearMovieMessages();
         setMovieToDelete(movie);
+    }
+
+    function handleAddMovieClick() {
+        if (!canOpenAdminModal()) {
+            return;
+        }
+
+        clearMovieMessages();
+        setShowAddMovieModal(true);
     }
 
     async function confirmDeleteMovie() {
         clearMovieMessages();
 
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            onAuthRequired?.();
-            return;
-        }
-
         try {
-            await api.delete(`/movies/${movieToDelete.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await api.delete(`/movies/${movieToDelete.id}`);
 
             setAdminMovies((currentMovies) =>
                 currentMovies.filter((movie) => movie.id !== movieToDelete.id)
@@ -229,8 +214,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
         } catch (error) {
             const detail = error.response?.data?.detail || "";
 
-            if (error.response?.status === 401 || detail.toLowerCase().includes("token")) {
-                onAuthExpired?.();
+            if (onAdminApiError?.(error)) {
                 setMovieToDelete(null);
                 return;
             }
@@ -268,10 +252,7 @@ function AdminMoviesTab({ onAuthRequired, onAuthExpired }) {
 
                     <button
                         className="admin-add-button"
-                        onClick={() => {
-                            clearMovieMessages();
-                            setShowAddMovieModal(true);
-                        }}
+                        onClick={handleAddMovieClick}
                     >
                         + Add Movie
                     </button>

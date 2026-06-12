@@ -1,17 +1,35 @@
-import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { clearAuthToken, isValidAdminToken, SESSION_EXPIRED_MESSAGE } from "../services/auth";
 
 function AdminRoute({ children }) {
     // Admin auth guard
-    const token = localStorage.getItem("token");
+    const navigate = useNavigate();
+    const hasValidAdminSession = isValidAdminToken();
 
-    if (!token) {
-        return <Navigate to="/login" replace />;
-    }
+    useEffect(() => {
+        if (!hasValidAdminSession) {
+            clearAuthToken();
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
+            const timer = setTimeout(() => {
+                navigate("/login", { replace: true });
+            }, 2200);
 
-    if (payload.role !== "admin") {
-        return <Navigate to="/" replace />;
+            return () => clearTimeout(timer);
+        }
+    }, [hasValidAdminSession, navigate]);
+
+    if (!hasValidAdminSession) {
+        return (
+            <section className="admin-dashboard-page">
+                <div className="admin-section-messages">
+                    <div className="error-message">
+                        {SESSION_EXPIRED_MESSAGE}
+                    </div>
+                </div>
+            </section>
+        );
     }
 
     return children;

@@ -3,6 +3,22 @@ import { useNavigate } from "react-router-dom";
 
 import MyBookingCard from "../components/MyBookingCard";
 import api from "../services/api";
+import {
+    clearAuthToken,
+    isAuthError,
+    isValidUserToken,
+    SESSION_EXPIRED_MESSAGE,
+} from "../services/auth";
+
+// Show the session message before sending the user back to login
+function redirectToLogin(navigate, setErrorMessage) {
+    clearAuthToken();
+    setErrorMessage(SESSION_EXPIRED_MESSAGE);
+
+    setTimeout(() => {
+        navigate("/login");
+    }, 2000);
+}
 
 function MyBookingsPage() {
     const navigate = useNavigate();
@@ -15,6 +31,11 @@ function MyBookingsPage() {
 
     // Cancel booking actions
     function handleCancelClick(booking) {
+        if (!isValidUserToken()) {
+            redirectToLogin(navigate, setErrorMessage);
+            return;
+        }
+
         setBookingToCancel(booking);
     }
 
@@ -23,17 +44,10 @@ function MyBookingsPage() {
     }
 
     async function confirmCancelBooking() {
-        const token = localStorage.getItem("token");
-
         try {
             await api.put(
                 `/bookings/${bookingToCancel.id}/cancel`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                {}
             );
 
             setBookings((currentBookings) =>
@@ -46,19 +60,8 @@ function MyBookingsPage() {
 
             setBookingToCancel(null);
         } catch (error) {
-            const detail = error.response?.data?.detail || "";
-
-            if (
-                error.response?.status === 401 ||
-                detail.toLowerCase().includes("token")
-            ) {
-                localStorage.removeItem("token");
-                setErrorMessage("Your session has expired. Redirecting to login...");
-
-                setTimeout(() => {
-                    navigate("/login");
-                }, 1200);
-
+            if (isAuthError(error)) {
+                redirectToLogin(navigate, setErrorMessage);
                 setBookingToCancel(null);
                 return;
             }
@@ -71,28 +74,14 @@ function MyBookingsPage() {
     // Load user bookings
     useEffect(() => {
         async function fetchBookings() {
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                localStorage.removeItem("token");
-                setErrorMessage("Login required. Redirecting to login...");
-
-                setTimeout(() => {
-                    navigate("/login");
-                }, 1200);
-
+            if (!isValidUserToken()) {
+                redirectToLogin(navigate, setErrorMessage);
+                setLoading(false);
                 return;
             }
 
             try {
-                const response = await api.get(
-                    "/bookings/my-bookings",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                const response = await api.get("/bookings/my-bookings");
 
                 const formattedBookings = response.data.map((booking) => {
                     const showtimeDate = new Date(
@@ -127,23 +116,8 @@ function MyBookingsPage() {
 
                 setBookings(formattedBookings);
             } catch (error) {
-                const detail =
-                    error.response?.data?.detail || "";
-
-                if (
-                    error.response?.status === 401 ||
-                    detail.toLowerCase().includes("token")
-                ) {
-                    localStorage.removeItem("token");
-
-                    setErrorMessage(
-                        "Your session has expired. Redirecting to login..."
-                    );
-
-                    setTimeout(() => {
-                        navigate("/login");
-                    }, 1200);
-
+                if (isAuthError(error)) {
+                    redirectToLogin(navigate, setErrorMessage);
                     return;
                 }
 

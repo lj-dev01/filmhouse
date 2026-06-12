@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 
-function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
+function AdminShowtimesTab({ onAdminAction, onAdminApiError }) {
     // Showtimes data state
     const modalRef = useRef(null);
     const [movies, setMovies] = useState([]);
@@ -29,6 +29,11 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
     function clearShowtimeMessages() {
         setShowtimesError("");
         setShowtimesSuccess("");
+    }
+
+    // Check dashboard auth before showing action modals
+    function canOpenAdminModal() {
+        return onAdminAction?.() ?? true;
     }
 
     // Auto-clear messages
@@ -69,7 +74,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
                 }
 
                 setMovieShowtimes(showtimeResults);
-            } catch (error) {
+            } catch {
                 setShowtimesError("Failed to load showtimes.");
             } finally {
                 setLoadingShowtimes(false);
@@ -81,6 +86,10 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
 
     // Edit showtimes modal actions
     function handleEditShowtimesClick(movie) {
+        if (!canOpenAdminModal()) {
+            return;
+        }
+
         clearShowtimeMessages();
         setMovieToEditShowtimes(movie);
         setNewShowtime({
@@ -110,8 +119,6 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
         event.preventDefault();
         clearShowtimeMessages();
 
-        const token = localStorage.getItem("token");
-
         const selectedScreen = screens.find(
             (screen) => screen.id === Number(newShowtime.screen_id)
         );
@@ -127,11 +134,6 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
                     start_time: startTime,
                     ticket_price: Number(newShowtime.ticket_price),
                     available_seats: selectedScreen.capacity,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
                 }
             );
 
@@ -162,6 +164,10 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
                 return;
             }
 
+            if (onAdminApiError?.(error)) {
+                return;
+            }
+
             setShowtimesError(
                 detail || "Failed to add showtime. Please try again."
             );
@@ -170,6 +176,10 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
 
     // Delete showtime actions
     function handleDeleteShowtimeClick(showtime) {
+        if (!canOpenAdminModal()) {
+            return;
+        }
+
         clearShowtimeMessages();
         setShowtimeToDelete(showtime);
     }
@@ -177,19 +187,8 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
     async function confirmDeleteShowtime() {
         clearShowtimeMessages();
 
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            onAuthRequired?.();
-            return;
-        }
-
         try {
-            await api.delete(`/showtimes/${showtimeToDelete.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await api.delete(`/showtimes/${showtimeToDelete.id}`);
 
             setMovieShowtimes((currentShowtimes) => ({
                 ...currentShowtimes,
@@ -203,8 +202,7 @@ function AdminShowtimesTab({ onAuthRequired, onAuthExpired }) {
         } catch (error) {
             const detail = error.response?.data?.detail || "";
 
-            if (error.response?.status === 401 || detail.toLowerCase().includes("token")) {
-                onAuthExpired?.();
+            if (onAdminApiError?.(error)) {
                 setShowtimeToDelete(null);
                 return;
             }
