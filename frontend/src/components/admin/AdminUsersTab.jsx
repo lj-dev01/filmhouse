@@ -47,7 +47,7 @@ function AdminUsersTab({ onAdminApiError }) {
             <div className="admin-section-header">
                 <div>
                     <h2>All Users</h2>
-                    <p>View registered users and their assigned roles.</p>
+                    <p>View registered users and their assigned roles</p>
                 </div>
             </div>
 

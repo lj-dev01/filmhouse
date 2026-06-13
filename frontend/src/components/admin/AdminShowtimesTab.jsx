@@ -222,7 +222,7 @@ function AdminShowtimesTab({ onAdminAction, onAdminApiError }) {
                 <div className="admin-section-header">
                     <div>
                         <h2>All Showtimes</h2>
-                        <p>View and manage showtimes for each movie.</p>
+                        <p>View and manage showtimes for each movie</p>
                     </div>
                 </div>
 
