@@ -1,8 +1,10 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# SQLite database file
-DATABASE_URL = "sqlite:///./filmhouse.db"
+# SQLite database file, which can be overridden on Render to use the persistent disk path
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./filmhouse.db")
 
 # Database engine
 engine = create_engine(

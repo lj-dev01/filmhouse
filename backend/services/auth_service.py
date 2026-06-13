@@ -1,3 +1,5 @@
+import os
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -8,8 +10,8 @@ from jose import jwt, JWTError
 from database.database import get_db
 from models.user import User
 
-# Token settings
-SECRET_KEY = "filmhouse-secret-key"
+# Token settings, with SECRET_KEY supplied by Render in production
+SECRET_KEY = os.getenv("SECRET_KEY", "filmhouse-secret-key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
