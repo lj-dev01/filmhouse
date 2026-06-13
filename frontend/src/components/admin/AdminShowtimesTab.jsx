@@ -1,6 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 
+// Convert backend validation responses into readable admin messages
+function getShowtimeErrorMessage(detail) {
+    if (Array.isArray(detail)) {
+        return detail
+            .map((error) => error.msg)
+            .filter(Boolean)
+            .join(" ");
+    }
+
+    return detail;
+}
+
+// Validate the showtime form before sending it to the API
+function validateShowtimeForm(showtimeForm, selectedScreen) {
+    if (!selectedScreen) {
+        return "Please select a valid screen.";
+    }
+
+    if (showtimeForm.ticket_price && Number(showtimeForm.ticket_price) <= 0) {
+        return "Ticket price must be greater than 0.";
+    }
+
+    if (!showtimeForm.showtime_date || !showtimeForm.showtime_time) {
+        return "";
+    }
+
+    const startTime = new Date(
+        `${showtimeForm.showtime_date}T${showtimeForm.showtime_time}:00`
+    );
+
+    if (startTime < new Date()) {
+        return "Showtime start date and time cannot be in the past.";
+    }
+
+    return "";
+}
+
 function AdminShowtimesTab({ onAdminAction, onAdminApiError }) {
     // Showtimes data state
     const modalRef = useRef(null);
@@ -123,6 +160,13 @@ function AdminShowtimesTab({ onAdminAction, onAdminApiError }) {
             (screen) => screen.id === Number(newShowtime.screen_id)
         );
 
+        const validationMessage = validateShowtimeForm(newShowtime, selectedScreen);
+
+        if (validationMessage) {
+            setShowtimesError(validationMessage);
+            return;
+        }
+
         const startTime = `${newShowtime.showtime_date}T${newShowtime.showtime_time}:00`;
 
         try {
@@ -155,7 +199,7 @@ function AdminShowtimesTab({ onAdminAction, onAdminApiError }) {
 
             setShowtimesSuccess("Showtime added successfully.");
         } catch (error) {
-            const detail = error.response?.data?.detail || "";
+            const detail = getShowtimeErrorMessage(error.response?.data?.detail || "");
 
             if (detail === "This screen already has a showtime at that date and time.") {
                 setShowtimesError(
