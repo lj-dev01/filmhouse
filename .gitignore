@@ -18,7 +18,7 @@ backend/venv/
 node_modules/
 dist/
 
-# SQLite database to be removed later after database is finished setting up 
+# SQLite database
 *.db
 
 
